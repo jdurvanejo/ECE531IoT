@@ -11,6 +11,14 @@
 #define URL       "http://10.0.2.3:8000"
 
 //create array of verb strings to reference
+
+static size_t callback(char *buff, size_t item_size, size_t item_number, void* additional)
+{
+    size_t num_bytes = item_size*item_number;
+    printf("new Chunk (%zu bytes)\n", num_bytes);
+    return num_bytes;
+}
+
 char in_strings[20][100] = {"-o","--post","-g","--get","-p","--put","-d","--delete","-h","--help"};
 int main(int argc, char **argv)
 {
@@ -22,13 +30,14 @@ int main(int argc, char **argv)
     int arg = 0;
 
     //look for the url command if not entered then ignore the command
-    if (argv[1] == "-u" | argv[1] == "--url")
+    if (strcmp(argv[1],"-u") == 0 | strcmp(argv[1],"--url") == 0)
     {
 	arg = 1;
     }
-    if (argv[2] == "-u" | argv[2] == "--url")
+    if (strcmp(argv[2],"-u") == 0 | strcmp(argv[2],"--url") == 0)
     {
 	arg = 2;
+	printf("it's the second one\n");
     }
     if (arg != 1 && arg != 2)
     {
@@ -104,16 +113,18 @@ int main(int argc, char **argv)
 	//put
 	curl = curl_easy_init();
 	if(curl) {
-	    //curl_easy_setopt(curl,CURLOPT_READFUNCTION, readcallback)
+	    curl_easy_setopt(curl, CURLOPT_URL, URL);
+	    curl_easy_setopt(curl,CURLOPT_READFUNCTION, callback);
 	    //need to add stuff here but don't fully understand
 	    res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
-                //printf(stderr, "put failed: %s\n", curl_easy_strerror(res));
+                fprintf(stderr, "put failed: %s\n", curl_easy_strerror(res));
             }
             else {
                 printf("%s\n",res);
             }
             curl_easy_cleanup(curl);
+	    return OK;
 
 	}
 	else
