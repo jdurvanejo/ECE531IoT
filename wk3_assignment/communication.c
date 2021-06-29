@@ -64,7 +64,7 @@ int main(int argc, char **argv)
             curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "did it work");
             res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
-                //printf(stderr, "post failed: %s\n", curl_easy_strerror(res));
+                fprintf(stderr, "post failed: %s\n", curl_easy_strerror(res));
             }
             else {
                 printf("%s\n",res);
