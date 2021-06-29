@@ -1,20 +1,24 @@
 #!/bin/sh
 
-DAEMON_NAME="TEST DAEMON"
+DAEMON_NAME="sampled"
 
 start() {
   printf "Starting $DAEMON_NAME: "
+  /usr/sbin/$DAEMON_NAME
+  touch /var/lock/$DAEMON_NAME
   echo "OK"
 }
 
 stop() {
   printf "Stopping $DAEMON_NAME: "
+  killall $DAEMON_NAME
+  rm -f /var/lock/$DAEMON_NAME
   echo "OK"
 }
 
 restart() {
-  stop
   start
+  stop
 }
 
 case "$1" in
@@ -33,3 +37,5 @@ case "$1" in
 esac
 
 exit $?
+
+
