@@ -8,7 +8,7 @@
 #define INIT_ERR  1
 #define REQ_ERR   2
 
-#define URL       "http://10.0.2.3:8000"
+//#define URL       "http://10.0.2.3:8000"
 
 //create array of verb strings to reference
 
@@ -16,6 +16,13 @@ static size_t callback(char *buff, size_t item_size, size_t item_number, void* a
 {
     size_t num_bytes = item_size*item_number;
     printf("new Chunk (%zu bytes)\n", num_bytes);
+    for (int i = 0; i < num_bytes; i++) {
+	printf("%c",buff[i]);
+    }
+    printf("\n\n");
+
+
+
     return num_bytes;
 }
 
@@ -23,6 +30,10 @@ char in_strings[20][100] = {"-o","--post","-g","--get","-p","--put","-d","--dele
 int main(int argc, char **argv)
 {
     int command = 50;
+    FILE * data_src;
+    char *file;
+    char *url;
+    struct stat file_info;
     CURL    *curl;
     CURLcode res;
     curl_global_init(CURL_GLOBAL_ALL);
@@ -66,10 +77,11 @@ int main(int argc, char **argv)
     if (command == 0 | command == 1)
     {
 	//post
+	url = argv[3];
 	curl = curl_easy_init();
 	if(curl)
 	{
-            curl_easy_setopt(curl, CURLOPT_URL, URL);
+            curl_easy_setopt(curl, CURLOPT_URL, url);
             curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "did it work");
             res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
@@ -89,14 +101,15 @@ int main(int argc, char **argv)
     else if (command == 2 | command == 3)
     {
 	//get
+	url = argv[3];
 	curl = curl_easy_init();
 	if(curl) 
 	{
-            curl_easy_setopt(curl, CURLOPT_URL, URL);
+            curl_easy_setopt(curl, CURLOPT_URL, url);
             curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
             res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
-                //printf(stderr, "get failed: %s\n", curl_easy_strerror(res));
+                fprintf(stderr, "get failed: %s\n", curl_easy_strerror(res));
             }
 	    else {
 		printf("%s\n",res);
@@ -111,11 +124,19 @@ int main(int argc, char **argv)
     else if (command == 4 | command == 5)
     {
 	//put
+	if (argc < 5) {
+	    return 1;
+	}
+	url = argv[3];
+	file = argv[4];
+	stat(file, &file_info);
+	data_src = fopen(argv[4], "rb");
 	curl = curl_easy_init();
 	if(curl) {
-	    curl_easy_setopt(curl, CURLOPT_URL, URL);
+	    curl_easy_setopt(curl, CURLOPT_URL, url);
 	    curl_easy_setopt(curl,CURLOPT_READFUNCTION, callback);
-	    //need to add stuff here but don't fully understand
+	    curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+	    curl_easy_setopt(curl, CURLOPT_READDATA, data_src);
 	    res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
                 fprintf(stderr, "put failed: %s\n", curl_easy_strerror(res));
@@ -124,13 +145,13 @@ int main(int argc, char **argv)
                 printf("%s\n",res);
             }
             curl_easy_cleanup(curl);
-	    return OK;
-
 	}
 	else
         {
             printf("initialization error");
         }
+	fclose(data_src);
+	curl_global_cleanup();
     }
     else if (command == 6 | command == 7)
     {
