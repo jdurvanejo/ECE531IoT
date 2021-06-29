@@ -37,7 +37,7 @@ int main(int argc, char **argv)
     }
     if (argv[1] == argv[2])
         {
-            printf("improper input command format see help (-h) for assistance>
+            printf("improper input command format see help (-h) for assistance");
             return 1;
         }
 
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
             curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "did it work");
             res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
-                printf(stderr, "post failed: %s\n", curl_easy_strerror(res));
+                //printf(stderr, "post failed: %s\n", curl_easy_strerror(res));
             }
             else {
                 printf("%s\n",res);
@@ -87,7 +87,7 @@ int main(int argc, char **argv)
             curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
             res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
-                printf(stderr, "get failed: %s\n", curl_easy_strerror(res));
+                //printf(stderr, "get failed: %s\n", curl_easy_strerror(res));
             }
 	    else {
 		printf("%s\n",res);
@@ -104,11 +104,11 @@ int main(int argc, char **argv)
 	//put
 	curl = curl_easy_init();
 	if(curl) {
-	    curl_easy_setopt(curl,CURLOPT_READFUNCTION, readcallback)
+	    //curl_easy_setopt(curl,CURLOPT_READFUNCTION, readcallback)
 	    //need to add stuff here but don't fully understand
 	    res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
-                printf(stderr, "put failed: %s\n", curl_easy_strerror(res));
+                //printf(stderr, "put failed: %s\n", curl_easy_strerror(res));
             }
             else {
                 printf("%s\n",res);
@@ -126,11 +126,11 @@ int main(int argc, char **argv)
 	//delete
 	curl = curl_easy_init();
         if(curl) {
-            curl_easy_setopt(curl,CURLOPT_READFUNCTION, readcallback)
+            //curl_easy_setopt(curl,CURLOPT_READFUNCTION, readcallback);
             //need to add stuff here but don't fully understand
             res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
-                printf(stderr, "put delete: %s\n", curl_easy_strerror(res));
+                //printf(stderr, "put delete: %s\n", curl_easy_strerror(res));
             }
             else {
                 printf("%s\n",res);

@@ -7,9 +7,9 @@ INCLUDES=
 LFLAGS=
 LIBS=-lcurl -uClibc -lc
 
-SRC=requestor.c
+SRC=communication.c
 OBJ=$(SRC:.c=.o)
-MAIN=test
+MAIN=input_test
 
 RM=rm - rf
 

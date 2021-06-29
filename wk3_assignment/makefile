@@ -6,9 +6,9 @@ INCLUDES=
 LFLAGS=-L/usr/lib/x86_64-linux-gnu
 LIBS=-lcurl -lpthread
 
-SRC=requestor.c
+SRC=communication.c
 OBJ=$(SRC:.c=.o)
-MAIN=test
+MAIN=input_test
 
 RM=rm - rf
 
