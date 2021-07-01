@@ -38,11 +38,11 @@ int main(int argc, char **argv)
     CURLcode res;
     //curl_global_init(CURL_GLOBAL_ALL);
     size_t i = 0;
-    printf("argc length: ",argc);
+    printf("argc length: %i\n",argc);
     //filter the input
-    if (argc > 2)
+    if (argc == 2)
     {
-        if (strcmp(argv[1], "-h") == 0 | strcmp(argv[1], "--help") == 0)
+        if (strcmp(argv[1], in_strings[8]) == 0 | strcmp(argv[1], in_strings[9]) == 0)
         {
             command = 8;
         }
