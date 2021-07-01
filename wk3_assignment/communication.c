@@ -30,7 +30,7 @@ char in_strings[20][100] = {"-o","--post","-g","--get","-p","--put","-d","--dele
 int main(int argc, char **argv)
 {
     int command = 50;
-    inf cmd_arg = 1;
+    int cmd_arg = 1;
     FILE * data_src;
     char *file;
     char *url;
@@ -174,15 +174,21 @@ int main(int argc, char **argv)
     else if (command == 6 | command == 7)
     {
 	//delete
+	if (argc < 5) {
+            printf("ERROR: not enough arguments\n");
+	    return 1;
+        }
+	url = argv[3];
 	curl = curl_easy_init();
         if(curl) {
-	    //curl_east_setopt(curl,CURLOPT_VERBOSE,1L);
-	    //curl_easy_opt(curl,CURLOPT_CUSTOMREQUEST,"delete");
-	    //curl_easy_setopt(curl,CURLOPT_READFUNCTION, readcallback);
+	    curl_easy_setopt(curl, CURLOPT_URL, url);
+	    curl_easy_setopt(curl,CURLOPT_VERBOSE,1L);
+	    curl_easy_setopt(curl,CURLOPT_CUSTOMREQUEST,"delete");
+	    curl_easy_setopt(curl,CURLOPT_WRITEFUNCTION, callback);
             //need to add stuff here but don't fully understand
             res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
-                //printf(stderr, "put delete: %s\n", curl_easy_strerror(res));
+                fprintf(stderr, "put delete: %s\n", curl_easy_strerror(res));
             }
             else {
                 printf("%s\n",res);
