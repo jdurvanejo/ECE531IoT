@@ -47,7 +47,7 @@ int main(int argc, char **argv)
         else
         {
             printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
-            return 1;
+            return INIT_ERR;
         }
     }
     else
