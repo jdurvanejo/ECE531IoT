@@ -30,6 +30,7 @@ char in_strings[20][100] = {"-o","--post","-g","--get","-p","--put","-d","--dele
 int main(int argc, char **argv)
 {
     int command = 50;
+    inf cmd_arg = 1;
     FILE * data_src;
     char *file;
     char *url;
@@ -40,37 +41,54 @@ int main(int argc, char **argv)
     size_t i = 0;
     int arg = 0;
 
+
+    if (argc > 2)
+    {
+    if (strcmp(argv[1],"-h") == 0 | strcmp(argv[1],"--help") == 0)
+    {
+	command = 8;
+    }
+    else
+    {
     //look for the url command if not entered then ignore the command
-    if (strcmp(argv[1],"-u") == 0 | strcmp(argv[1],"--url") == 0)
-    {
-	arg = 1;
-    }
-    if (strcmp(argv[2],"-u") == 0 | strcmp(argv[2],"--url") == 0)
-    {
-	arg = 2;
-	printf("it's the second one\n");
-    }
-    if (arg != 1 && arg != 2)
-    {
-	printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
-	return 1;
-    }
-    if (argv[1] == argv[2])
-        {
-            printf("improper input command format see help (-h) for assistance");
-            return 1;
-        }
-
-
-    //check for command argument
-    for( i = 0; i < sizeof(in_strings) / sizeof(in_strings[0]); i++)
-    {
-	if (strcmp(in_strings[i],argv[1]) == 0)
+	if (strcmp(argv[1],"-u") == 0 | strcmp(argv[1],"--url") == 0)
 	{
-            command = i;
+	    arg = 1;
 	}
-    }
+	if (strcmp(argv[2],"-u") == 0 | strcmp(argv[2],"--url") == 0)
+	{
+	    arg = 2;
+	    printf("it's the second one\n");
+	}
+	if (arg != 1 && arg != 2)
+	{
+	    printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+    	    return 1;
+	}
+	if (argv[1] == argv[2])
+	    {
+		printf("improper input command format see help (-h) for assistance");
+		return 1;
+	    }
+	//check for command argument
+	for( i = 0; i < sizeof(in_strings) / sizeof(in_strings[0]); i++)
+	{
+	    if (arg = 2)
+	    {
+		cmd_arg = 1;
+	    }
+	    else
+	    {
+		cmd_arg = 2;
+	    }
+	    if (strcmp(in_strings[i],argv[cmd_arg]) == 0)
+	    {
+        	command = i;
+	    }
+	}
 
+    }
+    }
     //assume argv3 is the url and argv4 is the bit to do stuff with
     //URL = argv[3]
 
@@ -158,7 +176,9 @@ int main(int argc, char **argv)
 	//delete
 	curl = curl_easy_init();
         if(curl) {
-            //curl_easy_setopt(curl,CURLOPT_READFUNCTION, readcallback);
+	    //curl_east_setopt(curl,CURLOPT_VERBOSE,1L);
+	    //curl_easy_opt(curl,CURLOPT_CUSTOMREQUEST,"delete");
+	    //curl_easy_setopt(curl,CURLOPT_READFUNCTION, readcallback);
             //need to add stuff here but don't fully understand
             res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
@@ -181,13 +201,19 @@ int main(int argc, char **argv)
 	//help
 	printf("Hi there, here are a list of the commands that can be used:\n");
 	printf("-o/--post -g/--get -p/--put -d/--delete\n");
-	printf("an an example if one were to need to get from a specific url\n");
-	printf("the line would be entered as './communication -g yoururl.here'\n");
-	printf("the same result would come from '.communication --get yoururl.here'\n");
+	printf("\n");
+	printf("In addition to the commnd the url must be specified as well\n");
+	printf("As an example, for a simple get command must be entered as follows: \n");
+	printf("./wk3-assignment -g -u <url to communicate with>\n");
+	printf("\n");
+	printf("This is the same as: \n");
+	printf("./wk3-assignment --get --url <url to communicate with>\n");
+	printf("if more assistance is required please contact jdurvanejo@unm.edu");
     }
     else if (command == 50)
     {
-	printf("I don't know that command\n");
+	printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+        return 1;
     }
     curl_global_cleanup();
     return OK;

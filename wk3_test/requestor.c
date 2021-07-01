@@ -17,7 +17,7 @@ int main(void)
     if(curl)
     {
         curl_easy_setopt(curl, CURLOPT_URL, URL);
-        //curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
         res = curl_easy_perform(curl);
         if (res != CURLE_OK) {
             return REQ_ERR;
