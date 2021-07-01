@@ -20,12 +20,11 @@ static size_t callback(char *buff, size_t item_size, size_t item_number, void* a
     return num_bytes;
 }
 
-//create array of verb strings to reference
-//char in_strings[20][100] = {"-o","--post","-g","--get","-p","--put","-d","--delete","-h","--help"};
 
 
 int main(int argc, char **argv)
 {
+    //create array of verb strings to reference
     char in_strings[20][100] = {"-o","--post","-g","--get","-p","--put","-d","--delete","-h","--help"};
 
     int command = 50;
@@ -207,7 +206,7 @@ int main(int argc, char **argv)
             	//Is more supposed to be sent with it?
             res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
-                fprintf(stderr, "put delete: %s\n", curl_easy_strerror(res));
+                fprintf(stderr, "delete: %s\n", curl_easy_strerror(res));
                 return REQ_ERR;
             }
             else {
