@@ -21,11 +21,13 @@ static size_t callback(char *buff, size_t item_size, size_t item_number, void* a
 }
 
 //create array of verb strings to reference
-char in_strings[20][100] = {"-o","--post","-g","--get","-p","--put","-d","--delete","-h","--help"};
+//char in_strings[20][100] = {"-o","--post","-g","--get","-p","--put","-d","--delete","-h","--help"};
 
 
 int main(int argc, char **argv)
 {
+    char in_strings[20][100] = {"-o","--post","-g","--get","-p","--put","-d","--delete","-h","--help"};
+
     int command = 50;
     int arg_cmd = 1;
     int arg_url = 2;
@@ -36,7 +38,7 @@ int main(int argc, char **argv)
     CURLcode res;
     //curl_global_init(CURL_GLOBAL_ALL);
     size_t i = 0;
-
+    printf("argc length: ",argc);
     //filter the input
     if (argc > 2)
     {
@@ -130,7 +132,7 @@ int main(int argc, char **argv)
 	    curl = curl_easy_init();
 	    if(curl) 
 	    {
-            curl_easy_setopt(curl, CURLOPT_URL, url);
+            curl_easy_setopt(curl, CURLOPT_URL, argv[3]);
             curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
             res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
@@ -187,7 +189,7 @@ int main(int argc, char **argv)
     else if (command == 6 | command == 7)
     {
 	    //delete
-        if (argc < 5)
+        if (argc < 4)
         {
             printf("ERROR: not enough arguments\n");
             return REQ_ERR;
@@ -197,8 +199,12 @@ int main(int argc, char **argv)
 	        curl_easy_setopt(curl, CURLOPT_URL, argv[3]);
 	        curl_easy_setopt(curl,CURLOPT_VERBOSE,1L);
 	        curl_easy_setopt(curl,CURLOPT_CUSTOMREQUEST,"delete");
-            //not totally sue if implemented correctly
-            //Is more supposed to be sent with it?
+		if (argc > 4)
+		{
+		    curl_easy_setopt(curl, CURLOPT_POSTFIELDS, argv[4]);
+		}
+            	//not totally sue if implemented correctly
+            	//Is more supposed to be sent with it?
             res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
                 fprintf(stderr, "put delete: %s\n", curl_easy_strerror(res));
