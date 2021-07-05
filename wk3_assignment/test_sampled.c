@@ -1,3 +1,26 @@
+
+
+#define _POSIX_SOURCE
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <stdbool.h>
+#include <signal.h>
+#include <stdio.h>
+#include <syslog.h>
+#include <string.h>
+#undef _POSIX_SOURCE
+
+#define ERR_WTF	   5
+#define ERR_CHDIR  4
+#define ERR_SETSID 3
+#define ERR_FORK   2
+#define OK	   1
+#define DAEMON_NAME "sampled"
+#define ERROR_FORMAT "%s"
+
 static void _signal_handler(const int signal) {
   switch(signal) {
     case SIGHUP:
@@ -14,7 +37,7 @@ static void _signal_handler(const int signal) {
 
 static void _do_work(void) {
   for (int i = 0; true; i++) {
-    syslog(LOG_INFO, "iteration: %d, i);
+    syslog(LOG_INFO, "iteration: %d", i);
     sleep(1);
   }
 }
@@ -29,12 +52,13 @@ int main(void) {
   if (pid < 0) {
     syslog(LOG_ERR, ERROR_FORMAT, strerror(errno));
     return ERR_FORK;
+  }
 
   if (pid > 0) {
     return OK;
   }
 
-  if setsid() < -1) {
+  if (setsid() < -1) {
     syslog(LOG_ERR, ERROR_FORMAT, strerror(errno));
     return ERR_SETSID;
   }
@@ -47,11 +71,11 @@ int main(void) {
   umask(S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
   if (chdir("/") < 0) {
-    syslog(LOG_ERR, ERROR_FORMAT, sttrerror(errno));
+    syslog(LOG_ERR, ERROR_FORMAT, strerror(errno));
     return ERR_CHDIR;
   }
 
-  signal(SIG_TERM, _signal_handler);
+  signal(SIGTERM, _signal_handler);
   signal(SIGHUP,_signal_handler);
 
 
