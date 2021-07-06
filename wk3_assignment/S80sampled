@@ -4,7 +4,7 @@ DAEMON_NAME="test_sampled"
 
 start() {
   printf "Starting $DAEMON_NAME: "
-  su /usr/sbin/$DAEMON_NAME
+  /usr/sbin/$DAEMON_NAME
   touch /var/lock/$DAEMON_NAME
   echo "OK"
 }
