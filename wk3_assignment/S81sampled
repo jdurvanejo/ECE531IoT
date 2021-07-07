@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DAEMON_NAME="test_sampled"
+DAEMON_NAME="time_daemon"
 
 start() {
   printf "Starting $DAEMON_NAME: "

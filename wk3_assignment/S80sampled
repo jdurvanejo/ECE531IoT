@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DAEMON_NAME="test_sampled"
+DAEMON_NAME="sample_test"
 
 start() {
   printf "Starting $DAEMON_NAME: "
