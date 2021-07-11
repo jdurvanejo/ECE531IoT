@@ -167,6 +167,7 @@ int main(int argc, char **argv)
 	        curl_easy_setopt(curl,CURLOPT_READFUNCTION,&callback);
 	        curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
 	        curl_easy_setopt(curl, CURLOPT_READDATA, data_src);
+		curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE, (curl_off_t)file_info.st_size);
 	        res = curl_easy_perform(curl);
             if (res != CURLE_OK) {
                 fprintf(stderr, "put failed: %s\n", curl_easy_strerror(res));
