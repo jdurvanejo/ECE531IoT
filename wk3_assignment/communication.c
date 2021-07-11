@@ -163,9 +163,11 @@ int main(int argc, char **argv)
 	    data_src = fopen(argv[4], "rb");
 	    curl = curl_easy_init();
 	    if(curl) {
-	        curl_easy_setopt(curl, CURLOPT_URL, argv[3]);
-	        curl_easy_setopt(curl,CURLOPT_READFUNCTION,&callback);
-	        curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+		curl_easy_setopt(curl,CURLOPT_READFUNCTION,callback);
+	        curl_easy_setopt(curl,CURLOPT_UPLOAD, 1L);
+		curl_easy_setopt(curl, CURLOPT_URL, argv[3]);
+	        //curl_easy_setopt(curl,CURLOPT_READFUNCTION,callback);
+	        //curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
 	        curl_easy_setopt(curl, CURLOPT_READDATA, data_src);
 		curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE, (curl_off_t)file_info.st_size);
 	        res = curl_easy_perform(curl);
@@ -205,10 +207,10 @@ int main(int argc, char **argv)
 		}
             	//not totally sue if implemented correctly
             	//Is more supposed to be sent with it?
-            res = curl_easy_perform(curl);
-            if (res != CURLE_OK) {
-                fprintf(stderr, "delete: %s\n", curl_easy_strerror(res));
-                return REQ_ERR;
+        	res = curl_easy_perform(curl);
+        	if (res != CURLE_OK) {
+        	fprintf(stderr, "delete: %s\n", curl_easy_strerror(res));
+        	return REQ_ERR;
             }
             else {
                 printf("%s\n",res);
