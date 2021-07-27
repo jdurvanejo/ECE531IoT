@@ -12,6 +12,7 @@
 #include <syslog.h>
 #include <string.h>
 #include <time.h>
+#include <fcntl.h>
 #undef _POSIX_SOURCE
 
 #define ERR_WTF	   5
@@ -19,7 +20,7 @@
 #define ERR_SETSID 3
 #define ERR_FORK   2
 #define OK	   1
-#define DAEMON_NAME "sampled"
+#define DAEMON_NAME "otherd"
 #define ERROR_FORMAT "%s"
 
 static void _signal_handler(const int signal) {
@@ -39,14 +40,24 @@ static void _signal_handler(const int signal) {
 static void _do_work(void) {
   time_t time_current;
   struct tm *time_stuff;
+  FILE *fptr;
+  //int test_var;
+  int current_temp;
 
   while(1==1)
   {
+    //read from the temperature file
+    fptr = fopen("/var/tmp/temp","r");
+    fscanf(fptr,"%d",&current_temp);
+    fclose(fptr);
+    syslog(LOG_INFO, "current temp: %d\n",current_temp);
+
+    //try to write to the heater
     time(&time_current);
     time_stuff = localtime(&time_current);
-    syslog(LOG_INFO, "current time: %i:%i:%i\n",time_stuff->tm_min,time_stuff->tm_sec,time_stuff->tm_hour);
- // for (int i = 0; true; i++) {
- //   syslog(LOG_INFO, "iteration: %d", i);
+    fptr = fopen("/var/tmp/status","w");
+    fprintf(fptr,"OFF : %i:%i:%i",time_stuff->tm_hour,time_stuff->tm_min,time_stuff->tm_sec);
+    fclose(fptr);
     sleep(1);
   }
 }
@@ -54,7 +65,7 @@ static void _do_work(void) {
 int main(void) {
 
    openlog(DAEMON_NAME, LOG_PID | LOG_NDELAY | LOG_NOWAIT, LOG_DAEMON);
-  syslog(LOG_INFO, "starting sampled");
+  syslog(LOG_INFO, "starting otherd");
 
 
   pid_t pid = fork();
@@ -87,7 +98,7 @@ int main(void) {
   signal(SIGTERM, _signal_handler);
   signal(SIGHUP,_signal_handler);
 
-
+  syslog(LOG_INFO,"Am i making it this far?");
   _do_work();
 
   return ERR_WTF;
