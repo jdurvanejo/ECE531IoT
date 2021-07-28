@@ -24,10 +24,10 @@
 #define DAEMON_NAME "projectd"
 #define ERROR_FORMAT "%s"
 
-#define URL "http://ec2-54-177-104-78.us-west-1.compute.amazonaws.com:3000/"
-#define MORNING_URL "http://ec2-54-177-104-78.us-west-1.compute.amazonaws.com:3000/1"
-#define AFTERNOON_URL "http://ec2-54-177-104-78.us-west-1.compute.amazonaws.com:3000/2"
-#define NIGHT_URL "http://ec2-54-177-104-78.us-west-1.compute.amazonaws.com:3000/3"
+#define URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/"
+#define MORNING_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/1"
+#define AFTERNOON_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/2"
+#define NIGHT_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/3"
 
 static void _signal_handler(const int signal) {
   switch(signal) {
