@@ -25,6 +25,9 @@
 #define ERROR_FORMAT "%s"
 
 #define URL "http://ec2-54-177-104-78.us-west-1.compute.amazonaws.com:3000/"
+#define MORNING_URL "http://ec2-54-177-104-78.us-west-1.compute.amazonaws.com:3000/1"
+#define AFTERNOON_URL "http://ec2-54-177-104-78.us-west-1.compute.amazonaws.com:3000/2"
+#define NIGHT_URL "http://ec2-54-177-104-78.us-west-1.compute.amazonaws.com:3000/3"
 
 static void _signal_handler(const int signal) {
   switch(signal) {
@@ -81,6 +84,38 @@ void get_http(char* url)
     }
 }
 
+void post_http(char* url, char* myString)
+{
+    /*
+    time_t time_current;
+    struct tm* time_stuff;
+    int current_temp;
+    char msg_time[];
+    time(&time_current);
+    time_stuff = localtime(&time_current);
+    msg_time = ("%i:%i",time_stuff->tm_hour,time_stuff->tm_min);*/
+
+    CURL* curl;
+    CURLcode res;
+    char str[4] = "str=";
+    char message[100];
+    strcat(message, str);
+    strcat(message, myString);
+
+    curl = curl_easy_init();
+    if (curl) {
+
+        curl_easy_setopt(curl, CURLOPT_URL, url);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, message);
+        res = curl_easy_perform(curl);
+
+        if (res != CURLE_OK)
+            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+
+        curl_easy_cleanup(curl);
+    }
+    curl_global_cleanup();
+}
 
 static void _do_work(void) {
   time_t time_current;
@@ -88,6 +123,7 @@ static void _do_work(void) {
   FILE *fptr;
   //int test_var;
   int current_temp;
+  char* settings;
 
   while(1==1)
   {
@@ -100,7 +136,15 @@ static void _do_work(void) {
 
     //need to read from the database the different set points
     //syslog(LOG_INFO, "from get: %s",get_http());
-    get_http(URL);
+
+    get_http(MORNING_URL);
+    //do some stuff to get the time and set point
+    //fptr = fopen("var/log/heater", "r");
+    //fscanf(fptr )
+
+
+    //get_http(AFTERNOON_URL);
+    //get_http(NIGHT_URL);
     //read from the temperature file
     fptr = fopen("/var/tmp/temp","r");
     fscanf(fptr,"%d",&current_temp);
@@ -113,6 +157,12 @@ static void _do_work(void) {
     fptr = fopen("/var/tmp/status","w");
     fprintf(fptr,"OFF : %i:%i:%i",time_stuff->tm_hour,time_stuff->tm_min,time_stuff->tm_sec);
     fclose(fptr);
+
+
+    //log the current state "time,heater state, set point, current temp"
+
+
+
     sleep(1);
   }
 }
