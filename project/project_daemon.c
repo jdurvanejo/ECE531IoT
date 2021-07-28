@@ -151,7 +151,7 @@ static void _do_work(void) {
     set_time = strtok(NULL, " ");
     syslog(LOG_INFO, "here's what I got for time: %s", set_time);
     set_temp_str = strtok(NULL, " ");
-    syslog(LOG_INFO, "here's what I got for id: %i", int(set_temp_str);
+    syslog(LOG_INFO, "here's what I got for id: %i", (int)set_temp_str);
     /*set_tmp = (int)set_temp_str;
     if (set_tmp >= current_temp)
     {
@@ -161,6 +161,7 @@ static void _do_work(void) {
     {
         heater_setting = "OFF";
     }*/
+    heater_setting = "OFF";
     //get_http(AFTERNOON_URL);
     //get_http(NIGHT_URL);
     //read from the temperature file
