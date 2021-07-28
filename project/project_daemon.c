@@ -123,7 +123,12 @@ static void _do_work(void) {
   FILE *fptr;
   //int test_var;
   int current_temp;
+  int set_tmp;
   char* settings;
+  char* set_id;
+  char* set_time;
+  char* set_temp_str;
+  char* heater_setting;
 
   while(1==1)
   {
@@ -139,23 +144,37 @@ static void _do_work(void) {
 
     get_http(MORNING_URL);
     //do some stuff to get the time and set point
-    //fptr = fopen("var/log/heater", "r");
-    //fscanf(fptr )
-
-
+    fptr = fopen("var/log/heater", "r");
+    fscanf(fptr,"%s",&settings);
+    set_id = strtok(settings, " ");
+    syslog(LOG_INFO, "here's what I got for id: %i", (int)set_id);
+    set_time = strtok(NULL, " ");
+    syslog(LOG_INFO, "here's what I got for time: %s", set_time);
+    set_temp_str = strtok(NULL, " ");
+    syslog(LOG_INFO, "here's what I got for id: %i", int(set_temp_str);
+    /*set_tmp = (int)set_temp_str;
+    if (set_tmp >= current_temp)
+    {
+        heater_setting = "ON";
+    }
+    else
+    {
+        heater_setting = "OFF";
+    }*/
     //get_http(AFTERNOON_URL);
     //get_http(NIGHT_URL);
     //read from the temperature file
     fptr = fopen("/var/tmp/temp","r");
-    fscanf(fptr,"%d",&current_temp);
+    fscanf(fptr,"%i",&current_temp);
     fclose(fptr);
     syslog(LOG_INFO, "current temp: %d\n",current_temp);
 
+    
     //try to write to the heater
     time(&time_current);
     time_stuff = localtime(&time_current);
     fptr = fopen("/var/tmp/status","w");
-    fprintf(fptr,"OFF : %i:%i:%i",time_stuff->tm_hour,time_stuff->tm_min,time_stuff->tm_sec);
+    fprintf(fptr,"%s : %i:%i:%i",heater_setting,time_stuff->tm_hour,time_stuff->tm_min,time_stuff->tm_sec);
     fclose(fptr);
 
 
