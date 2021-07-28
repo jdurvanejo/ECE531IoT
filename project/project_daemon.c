@@ -146,6 +146,7 @@ static void _do_work(void) {
     //do some stuff to get the time and set point
     fptr = fopen("var/log/heater", "r");
     fscanf(fptr,"%s",&settings);
+    fclose(fptr);
     set_id = strtok(settings, " ");
     syslog(LOG_INFO, "here's what I got for id: %i", (int)set_id);
     set_time = strtok(NULL, " ");
@@ -175,7 +176,7 @@ static void _do_work(void) {
     time(&time_current);
     time_stuff = localtime(&time_current);
     fptr = fopen("/var/tmp/status","w");
-    fprintf(fptr,"%s : %i:%i:%i",heater_setting,time_stuff->tm_hour,time_stuff->tm_min,time_stuff->tm_sec);
+    fprintf(fptr,"OFF : %i:%i:%i",time_stuff->tm_hour,time_stuff->tm_min,time_stuff->tm_sec);
     fclose(fptr);
 
 
