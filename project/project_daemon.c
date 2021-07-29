@@ -28,6 +28,7 @@
 #define MORNING_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/1"
 #define AFTERNOON_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/2"
 #define NIGHT_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/3"
+#define LOG_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/logging"
 
 static void _signal_handler(const int signal) {
   switch(signal) {
@@ -86,20 +87,12 @@ void get_http(char* url)
 
 void post_http(char* url, char* myString)
 {
-    /*
-    time_t time_current;
-    struct tm* time_stuff;
-    int current_temp;
-    char msg_time[];
-    time(&time_current);
-    time_stuff = localtime(&time_current);
-    msg_time = ("%i:%i",time_stuff->tm_hour,time_stuff->tm_min);*/
 
     CURL* curl;
     CURLcode res;
-    char str[4] = "str=";
+    //char str[4] = "str=";
     char message[100];
-    strcat(message, str);
+    //strcat(message, str);
     strcat(message, myString);
 
     curl = curl_easy_init();
@@ -121,11 +114,10 @@ static void _do_work(void) {
   time_t time_current;
   struct tm *time_stuff;
   FILE *fptr;
-  //int test_var;
+
   int current_temp;
   int set_tmp;
-  char settings[30];
-  char* rest;
+
   char* set_id;
   char* set_time;
   char* set_temp_str;
@@ -164,53 +156,16 @@ static void _do_work(void) {
 
 
     syslog(LOG_INFO, "Stuff ain't workin");
-    tok = strtok(buffer, " ");
-    syslog(LOG_INFO, "here's what I got for id: %s", tok);
-    tok = strtok(NULL," ");
-    syslog(LOG_INFO, "here's what I got for time: %s", tok);
-    tok = strtok(NULL, " ");
-    syslog(LOG_INFO, "here's what I got for temp: %s", tok);
+    set_id = strtok(buffer, " ");
+    syslog(LOG_INFO, "here's what I got for id: %s", set_id);
+    set_time = strtok(NULL," ");
+    syslog(LOG_INFO, "here's what I got for time: %s", set_time);
+    set_temp_str = strtok(NULL, " ");
+    syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
     //set_tmp = (int)set_temp_str;
 
 
-/*
-    char inputString[50];
-    char words[10][10];
-    int indexCtr = 0;
-    int wordIndex = 0;
-    int totalWords = 0;
 
-    for (indexCtr = 0; indexCtr <= strlen(settings); indexCtr++)
-    {
-	if (settings[indexCtr] == ' ')
-	{
-	    words[totalWords][wordIndex] = '\0';
-
-	    totalWords++;
-	    wordIndex = 0;
-	}
-	else
-	{
-	    words[totalWords][wordIndex] = settings[indexCtr];
-	    wordIndex++;
-	}
-    }
-    syslog(LOG_INFO, "%s", words[0]);
-    syslog(LOG_INFO, "%s", words[1]);
-    syslog(LOG_INFO, "%s", words[2]);
-*/  
-
-  /*if (set_tmp >= current_temp)
-    {
-        heater_setting = "ON";
-    }
-    else
-    {
-        heater_setting = "OFF";
-    }*/
-    //heater_setting = "OFF";
-    //get_http(AFTERNOON_URL);
-    //get_http(NIGHT_URL);
     //read from the temperature file
     fptr = fopen("/var/tmp/temp","r");
     fscanf(fptr,"%i",&current_temp);
@@ -226,9 +181,14 @@ static void _do_work(void) {
     fclose(fptr);
 
 
+    heater_setting = "OFF"
     //log the current state "time,heater state, set point, current temp"
-
-
+    char logged[100];
+    logged = "time=" + tm_hour + ":" + tm_min + "&"
+        + "heater=" + heater_setting + "&"
+        + "setpt=" + set_temp_str + "&"
+        + "actual=" + current_temp;
+    post_http(LOG_URL,logged);
 
     sleep(2);
   }
