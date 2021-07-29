@@ -124,37 +124,62 @@ static void _do_work(void) {
   //int test_var;
   int current_temp;
   int set_tmp;
-  char* settings;
+  char settings[30];
+  char* rest;
   char* set_id;
   char* set_time;
   char* set_temp_str;
-  char* heater_setting;
+  char heater_setting[5];
 
+  const char s[4] = " ";
+  char* tok;
   while(1==1)
   {
-    //time(&time_current);
-    //time_stuff = localtime(&time_current);
-    //syslog(LOG_INFO, "current time: %i:%i:%i\n",time_stuff->tm_hour,time_stuff->tm_min,time_stuff->tm_sec);
-    // for (int i = 0; true; i++) {
-    //   syslog(LOG_INFO, "iteration: %d", i);
-
 
     //need to read from the database the different set points
-    //syslog(LOG_INFO, "from get: %s",get_http());
-
     get_http(MORNING_URL);
     //do some stuff to get the time and set point
-    fptr = fopen("var/log/heater", "r");
+    fptr = fopen("/var/log/heater", "r");
     fscanf(fptr,"%s",&settings);
     fclose(fptr);
-    set_id = strtok(settings, " ");
-    syslog(LOG_INFO, "here's what I got for id: %i", (int)set_id);
-    set_time = strtok(NULL, " ");
-    syslog(LOG_INFO, "here's what I got for time: %s", set_time);
-    set_temp_str = strtok(NULL, " ");
-    syslog(LOG_INFO, "here's what I got for id: %i", (int)set_temp_str);
-    /*set_tmp = (int)set_temp_str;
-    if (set_tmp >= current_temp)
+    rest = settings;
+    /*
+    syslog(LOG_INFO, "Stuff ain't workin");
+    tok = strtok(settings, " ");
+    syslog(LOG_INFO, "here's what I got for id: %s", tok);
+    tok = strtok(NULL," ");
+    syslog(LOG_INFO, "here's what I got for time: %s", tok);
+    tok = strtok(NULL, " ");
+    syslog(LOG_INFO, "here's what I got for temp: %s", tok);
+    //set_tmp = (int)set_temp_str;
+*/
+
+
+    char inputString[50];
+    char words[10][10];
+    int indexCtr = 0;
+    int wordIndex = 0;
+    int totalWords = 0;
+
+    for (indexCtr = 0; indexCtr <= strlen(settings); indexCtr++)
+    {
+	if (settings[indexCtr] == ' ')
+	{
+	    words[totalWords][wordIndex] = '\0';
+
+	    totalWords++;
+	    wordIndex = 0;
+	}
+	else
+	{
+	    words[totalWords][wordIndex] = settings[indexCtr];
+	    wordIndex++;
+	}
+    }
+    syslog(LOG_INFO, "%s", words[0]);
+    syslog(LOG_INFO, "%s", words[1]);
+    syslog(LOG_INFO, "%s", words[2]);
+    /*if (set_tmp >= current_temp)
     {
         heater_setting = "ON";
     }
@@ -162,7 +187,7 @@ static void _do_work(void) {
     {
         heater_setting = "OFF";
     }*/
-    heater_setting = "OFF";
+    //heater_setting = "OFF";
     //get_http(AFTERNOON_URL);
     //get_http(NIGHT_URL);
     //read from the temperature file
@@ -184,7 +209,7 @@ static void _do_work(void) {
 
 
 
-    sleep(1);
+    sleep(2);
   }
 }
 
