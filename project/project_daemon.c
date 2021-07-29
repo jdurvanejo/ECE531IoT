@@ -128,6 +128,8 @@ static void _do_work(void) {
   char * buffer = 0;
   long length;
 
+  char* to_send;
+
   while(1==1)
   {
 
@@ -181,14 +183,32 @@ static void _do_work(void) {
     fclose(fptr);
 
 
-    heater_setting = "OFF"
+    heater_setting = "OFF";
+
+
+    fptr = fopen("/var/log/heater", "w");
+    fprintf(fptr, "time=%s:%s&heater=%s&setpt=%s&actual=%s", time_stuff->tm_hour, time_stuff->tm_min, heater_setting, set_temp_str, current_temp);
+    fclose(fptr);
+
+    fptr = fopen("/var/log/heater", "rb");
+    fseek(fptr, 0, SEEK_END);
+    length = ftell(fptr);
+    fseek(fptr, 0, SEEK_SET);
+    to_send = malloc(length);
+    if (to_send)
+    {
+        fread(to_send, 1, length, fptr);
+    }
+    fclose(fptr);
     //log the current state "time,heater state, set point, current temp"
-    char logged[100];
+    /*char logged[100] = "time=";
+    char
     logged = "time=" + tm_hour + ":" + tm_min + "&"
         + "heater=" + heater_setting + "&"
         + "setpt=" + set_temp_str + "&"
         + "actual=" + current_temp;
-    post_http(LOG_URL,logged);
+        */
+    post_http(LOG_URL,to_send);
 
     sleep(2);
   }
