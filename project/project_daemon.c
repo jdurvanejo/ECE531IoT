@@ -121,14 +121,14 @@ static void _do_work(void) {
   char* set_id;
   char* set_time;
   char* set_temp_str;
-  char heater_setting[5];
-
-  const char s[4] = " ";
-  char* tok;
+  char* heater_setting;
+  char* current_time;
+  //const char s[4] = " ";
+  //char* tok;
   char * buffer = 0;
   long length;
 
-  char* to_send;
+  char* to_send = 0;
 
   while(1==1)
   {
@@ -172,7 +172,7 @@ static void _do_work(void) {
     fptr = fopen("/var/tmp/temp","r");
     fscanf(fptr,"%i",&current_temp);
     fclose(fptr);
-    syslog(LOG_INFO, "current temp: %d\n",current_temp);
+    syslog(LOG_INFO, "current temp: %i\n",current_temp);
 
     
     //try to write to the heater
@@ -182,15 +182,18 @@ static void _do_work(void) {
     fprintf(fptr,"OFF : %i:%i:%i",time_stuff->tm_hour,time_stuff->tm_min,time_stuff->tm_sec);
     fclose(fptr);
 
+    //heater_setting = "OFF";
+    //char someTime[10] = (int)time_stuff->tm_hour;
+    //itoa((int)time_stuff->tm_hour, someTime, 10);
 
-    heater_setting = "OFF";
-
-
-    fptr = fopen("/var/log/heater", "w");
-    fprintf(fptr, "time=%s:%s&heater=%s&setpt=%s&actual=%s", time_stuff->tm_hour, time_stuff->tm_min, heater_setting, set_temp_str, current_temp);
+    fptr = fopen("/var/log/poster", "w");
+    fprintf(fptr, "hour=%i", time_stuff->tm_hour);
+    fprintf(fptr, "&min=%i", time_stuff->tm_min);
+    fprintf(fptr, "&heater=OFF&setpt=%s",set_temp_str);
+    fprintf(fptr, "&actual=%i",current_temp);
     fclose(fptr);
 
-    fptr = fopen("/var/log/heater", "rb");
+    fptr = fopen("/var/log/poster", "rb");
     fseek(fptr, 0, SEEK_END);
     length = ftell(fptr);
     fseek(fptr, 0, SEEK_SET);
@@ -200,6 +203,10 @@ static void _do_work(void) {
         fread(to_send, 1, length, fptr);
     }
     fclose(fptr);
+    syslog(LOG_INFO, "%s", to_send);
+
+
+
     //log the current state "time,heater state, set point, current temp"
     /*char logged[100] = "time=";
     char
@@ -210,7 +217,7 @@ static void _do_work(void) {
         */
     post_http(LOG_URL,to_send);
 
-    sleep(2);
+    sleep(60);
   }
 }
 

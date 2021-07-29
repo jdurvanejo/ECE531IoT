@@ -7,6 +7,7 @@ start() {
   /usr/sbin/$DAEMON_NAME
   touch /var/lock/$DAEMON_NAME
   touch /var/log/heater
+  touch /var/log/poster
   echo "OK"
 }
 
