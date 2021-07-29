@@ -133,28 +133,47 @@ static void _do_work(void) {
 
   const char s[4] = " ";
   char* tok;
+  char * buffer = 0;
+  long length;
+
   while(1==1)
   {
 
     //need to read from the database the different set points
     get_http(MORNING_URL);
     //do some stuff to get the time and set point
-    fptr = fopen("/var/log/heater", "r");
-    fscanf(fptr,"%s",&settings);
-    fclose(fptr);
-    rest = settings;
-    /*
+    fptr = fopen("/var/log/heater", "rb");
+    fseek (fptr, 0, SEEK_END);
+    length = ftell (fptr);
+    fseek (fptr, 0, SEEK_SET);
+    buffer = malloc (length);
+    if (buffer)
+    {
+	fread (buffer, 1, length, fptr);
+    }
+    fclose (fptr);
+    syslog(LOG_INFO, "%s", buffer);
+
+
+
+    //fscanf(fptr,"%s",&settings);
+    //fclose(fptr);
+    //rest = settings;
+    //syslog(LOG_INFO,"%s", settings);
+    
+
+
     syslog(LOG_INFO, "Stuff ain't workin");
-    tok = strtok(settings, " ");
+    tok = strtok(buffer, " ");
     syslog(LOG_INFO, "here's what I got for id: %s", tok);
     tok = strtok(NULL," ");
     syslog(LOG_INFO, "here's what I got for time: %s", tok);
     tok = strtok(NULL, " ");
     syslog(LOG_INFO, "here's what I got for temp: %s", tok);
     //set_tmp = (int)set_temp_str;
-*/
 
 
+/*
     char inputString[50];
     char words[10][10];
     int indexCtr = 0;
@@ -179,7 +198,9 @@ static void _do_work(void) {
     syslog(LOG_INFO, "%s", words[0]);
     syslog(LOG_INFO, "%s", words[1]);
     syslog(LOG_INFO, "%s", words[2]);
-    /*if (set_tmp >= current_temp)
+*/  
+
+  /*if (set_tmp >= current_temp)
     {
         heater_setting = "ON";
     }
