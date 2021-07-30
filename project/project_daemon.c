@@ -45,7 +45,7 @@ static void _signal_handler(const int signal) {
 }
 
 
-size_t incoming()(char *buffer, size_t itemSize, size_t nItems, void* ignore)
+size_t incoming(char *buffer, size_t itemSize, size_t nItems, void* ignore)
 {
     FILE *heater_ptr;
     //char *info;
@@ -72,7 +72,7 @@ void get_http(char* url)
     {
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, incoming());
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, incoming);
 	res = curl_easy_perform(curl);
 	if(res != 1)
 	{
@@ -265,7 +265,7 @@ static void _do_work(void) {
     {
         //night
         set_tmp = temp_nght;
-        syslog(LOG_INFO, "nighttime")
+        syslog(LOG_INFO, "nighttime");
 
     }
     else if (current_hour == hr_morn_int)
@@ -337,8 +337,9 @@ static void _do_work(void) {
 
     //read from the temperature file
     fptr = fopen("/var/tmp/temp","r");
-    fscanf(fptr,"%i",&current_temp);
+    fscanf(fptr,"%s",&current_temp);
     fclose(fptr);
+    current_temp_int
     syslog(LOG_INFO, "current temp: %i\n",current_temp);
 
 
@@ -376,7 +377,7 @@ static void _do_work(void) {
 
     ///////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////
-    sleep(60);
+    sleep(1);
   }
 }
 
