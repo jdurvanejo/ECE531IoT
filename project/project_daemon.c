@@ -45,7 +45,7 @@ static void _signal_handler(const int signal) {
 }
 
 
-size_t got_data(char *buffer, size_t itemSize, size_t nItems, void* ignore)
+size_t incoming()(char *buffer, size_t itemSize, size_t nItems, void* ignore)
 {
     FILE *heater_ptr;
     //char *info;
@@ -72,14 +72,13 @@ void get_http(char* url)
     {
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, got_data);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, incoming());
 	res = curl_easy_perform(curl);
 	if(res != 1)
 	{
 	    //fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
 	}
 	curl_easy_cleanup(curl);
-	//char *response = res;
 	//return 1;
 
     }
@@ -90,9 +89,7 @@ void post_http(char* url, char* myString)
 
     CURL* curl;
     CURLcode res;
-    //char str[4] = "str=";
     char message[100];
-    //strcat(message, str);
     strcat(message, myString);
 
     curl = curl_easy_init();
@@ -126,8 +123,6 @@ static void _do_work(void) {
   char* current_time;
   char* temp_hr;
   char* temp_min;
-  //const char s[4] = " ";
-  //char* tok;
   char * buffer = 0;
   long length;
 
@@ -177,13 +172,8 @@ static void _do_work(void) {
     syslog(LOG_INFO, "%s", buffer);    
 
 
-   // syslog(LOG_INFO, "Stuff ain't workin");
     set_id = strtok(buffer, " ");
-    //syslog(LOG_INFO, "here's what I got for id: %s", set_id);
     set_time = strtok(NULL," ");
-    //syslog(LOG_INFO, "here's what I got for time: %s", set_time);
-    //temp_now = set_time;
-
     set_temp_str = strtok(NULL, " ");
     syslog(LOG_INFO, "here's what I got for the first: id:%s time:%s temp:%s",set_id,set_time,set_temp_str);
     set_tmp = (int)set_temp_str;
@@ -191,11 +181,10 @@ static void _do_work(void) {
 
     hr_morn = strtok(set_time, ":");
     hr_morn_int = atoi(hr_morn);
-    syslog(LOG_INFO, "morn hr: %i", int_hr_morn);
+    //syslog(LOG_INFO, "morn hr: %i", int_hr_morn);
     min_morn = strtok(NULL, " ");
     min_morn_int = atoi(min_morn);
-
-    syslog(LOG_INFO, "morn min: %i", int_min_morn);
+    //syslog(LOG_INFO, "morn min: %i", int_min_morn);
     ///////////////////////////////////////////////////////
 
 
@@ -216,24 +205,19 @@ static void _do_work(void) {
     syslog(LOG_INFO, "%s", buffer);
 
 
-    //syslog(LOG_INFO, "Stuff ain't workin");
     set_id = strtok(buffer, " ");
-    //syslog(LOG_INFO, "here's what I got for id: %s", set_id);
     set_time = strtok(NULL, " ");
-    //syslog(LOG_INFO, "here's what I got for time: %s", set_time);
-    //temp_now = set_time;
-
     set_temp_str = strtok(NULL, " ");
-    //syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
     syslog(LOG_INFO, "here's what I got for the second: id:%s time:%s temp:%s", set_id, set_time, set_temp_str);
     set_tmp = (int)set_temp_str;
     temp_afnn = (int)set_temp_str;
 
     hr_afnn = strtok(set_time, ":");
-    syslog(LOG_INFO, "afnn hr: %s", hr_afnn);
+    hr_afnn_int = atoi(hr_afnn);
+    //syslog(LOG_INFO, "afnn hr: %s", hr_afnn);
     min_afnn = strtok(NULL, " ");
-    syslog(LOG_INFO, "morn min: %s", min_afnn);
-    ///////////////////////
+    min_afnn_int = atoi(min_afnn);
+    //syslog(LOG_INFO, "morn min: %s", min_afnn);
     ///////////////////////////////////////////////////////
 
 
@@ -254,28 +238,61 @@ static void _do_work(void) {
     syslog(LOG_INFO, "%s", buffer);
 
 
-    //syslog(LOG_INFO, "Stuff ain't workin");
     set_id = strtok(buffer, " ");
-    //syslog(LOG_INFO, "here's what I got for id: %s", set_id);
     set_time = strtok(NULL, " ");
-    //syslog(LOG_INFO, "here's what I got for time: %s", set_time);
-    //temp_now = set_time;
-
     set_temp_str = strtok(NULL, " ");
-    //syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
     syslog(LOG_INFO, "here's what I got for the third: id:%s time:%s temp:%s", set_id, set_time, set_temp_str);
     set_tmp = (int)set_temp_str;
     temp_nght = (int)set_temp_str;
 
     hr_nght = strtok(set_time, ":");
-    syslog(LOG_INFO, "afnn hr: %s", hr_nght);
+    hr_nght_int = atoi(hr_nght);
+    //syslog(LOG_INFO, "afnn hr: %s", hr_nght);
     min_nght = strtok(NULL, " ");
-    syslog(LOG_INFO, "morn min: %s", min_nght);
+    min_nght_int = atoi(min_nght);
+    //syslog(LOG_INFO, "morn min: %s", min_nght_int);
     ///////////////////////////////////////////////////////
 
+    //now I know the setpoints and when they go into effect
+    //check the current time to compare to
+
+    time(&time_current);
+    time_stuff = localtime(&time_current);
+    int current_hour = time_stuff->tm_hour;
+    int current_min = time_stuff->tm_min;
+
+    if (current_hour < hr_morn_int || current_hour >= hr_nght_int)
+    {
+        //night
+        set_tmp = temp_nght;
+    }
+    else if (current_hour < hr_afnn_int && current_hour >=hr_morn_int)
+    {
+        //morning
+        set_tmp = temp_morn;
+    }
+    else if (current_hour < hr_nght_int && current_hour >= hr_afnn_int)
+    {
+        //afternoon
+        set_tmp = temp_afnn;
+    }
 
 
+    //compare the two temperatures
+    if (set_tmp >= (int)current_temp)
+    {
+        heater_setting = "ON";
+    }
+    else
+    {
+        heater_setting = "OFF";
+    }
+    //syslog(LOG_INFO, "%s", heater_setting);
 
+    //try to write to the heater
+    fptr = fopen("/var/tmp/status", "w");
+    fprintf(fptr, "%s : %i:%i:%i", heater_setting, time_stuff->tm_hour, time_stuff->tm_min, time_stuff->tm_sec);
+    fclose(fptr);
 
 
     //read from the temperature file
@@ -285,28 +302,15 @@ static void _do_work(void) {
     syslog(LOG_INFO, "current temp: %i\n",current_temp);
 
 
-    //compare the two temperatures
-    if (set_tmp >= (int)current_temp)
-    {
-	heater_setting = "ON";
-    }
-    else
-    {
-	heater_setting = "OFF";
-    }
-    //syslog(LOG_INFO, "%s", heater_setting);
-
-    //try to write to the heater
-    time(&time_current);
-    time_stuff = localtime(&time_current);
-    fptr = fopen("/var/tmp/status","w");
-    fprintf(fptr,"%s : %i:%i:%i",heater_setting,time_stuff->tm_hour,time_stuff->tm_min,time_stuff->tm_sec);
-    fclose(fptr);
 
     //heater_setting = "OFF";
     //char someTime[10] = (int)time_stuff->tm_hour;
     //itoa((int)time_stuff->tm_hour, someTime, 10);
 
+
+
+    ///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////
     fptr = fopen("/var/log/poster", "w");
     fprintf(fptr, "hour=%i", time_stuff->tm_hour);
     fprintf(fptr, "&min=%i", time_stuff->tm_min);
@@ -328,17 +332,10 @@ static void _do_work(void) {
     syslog(LOG_INFO, "%s", to_send);
 
 
-
-    //log the current state "time,heater state, set point, current temp"
-    /*char logged[100] = "time=";
-    char
-    logged = "time=" + tm_hour + ":" + tm_min + "&"
-        + "heater=" + heater_setting + "&"
-        + "setpt=" + set_temp_str + "&"
-        + "actual=" + current_temp;
-        */
     post_http(LOG_URL,to_send);
 
+    ///////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////
     sleep(60);
   }
 }
