@@ -176,8 +176,8 @@ static void _do_work(void) {
     set_time = strtok(NULL," ");
     set_temp_str = strtok(NULL, " ");
     syslog(LOG_INFO, "here's what I got for the first: id:%s time:%s temp:%s",set_id,set_time,set_temp_str);
-    set_tmp = (int)set_temp_str;
-    temp_morn = (int)set_temp_str;
+    set_tmp = atoi(set_temp_str);
+    temp_morn = atoi(set_temp_str);
 
     hr_morn = strtok(set_time, ":");
     hr_morn_int = atoi(hr_morn);
@@ -209,8 +209,8 @@ static void _do_work(void) {
     set_time = strtok(NULL, " ");
     set_temp_str = strtok(NULL, " ");
     syslog(LOG_INFO, "here's what I got for the second: id:%s time:%s temp:%s", set_id, set_time, set_temp_str);
-    set_tmp = (int)set_temp_str;
-    temp_afnn = (int)set_temp_str;
+    set_tmp = atoi(set_temp_str);
+    temp_afnn = atoi(set_temp_str);
 
     hr_afnn = strtok(set_time, ":");
     hr_afnn_int = atoi(hr_afnn);
@@ -242,8 +242,8 @@ static void _do_work(void) {
     set_time = strtok(NULL, " ");
     set_temp_str = strtok(NULL, " ");
     syslog(LOG_INFO, "here's what I got for the third: id:%s time:%s temp:%s", set_id, set_time, set_temp_str);
-    set_tmp = (int)set_temp_str;
-    temp_nght = (int)set_temp_str;
+    set_tmp = atoi(set_temp_str);
+    temp_nght = atoi(set_temp_str);
 
     hr_nght = strtok(set_time, ":");
     hr_nght_int = atoi(hr_nght);
@@ -261,25 +261,65 @@ static void _do_work(void) {
     int current_hour = time_stuff->tm_hour;
     int current_min = time_stuff->tm_min;
 
-    if (current_hour < hr_morn_int || current_hour >= hr_nght_int)
+    if (current_hour < hr_morn_int || current_hour > hr_nght_int)
     {
         //night
         set_tmp = temp_nght;
+        syslog(LOG_INFO, "nighttime")
+
     }
-    else if (current_hour < hr_afnn_int && current_hour >=hr_morn_int)
+    else if (current_hour == hr_morn_int)
+    {
+        if (current_min >= min_morn_int)
+        {
+            //morning
+            set_tmp = temp_morn;
+        }
+        else
+        {
+            // still night
+            set_tmp = temp_nght;
+        }
+    }
+    else if (current_hour < hr_afnn_int && current_hour > hr_morn_int)
     {
         //morning
         set_tmp = temp_morn;
     }
-    else if (current_hour < hr_nght_int && current_hour >= hr_afnn_int)
+    else if (current_hour == hr_afnn_int)
+    {
+        if (current_min >= min_afnn_int)
+        {
+            //afternoon
+            set_tmp = temp_nght;
+        }
+        else
+        {
+            // still morning
+            set_tmp = temp_afnn;
+        }
+    }
+    else if (current_hour <= hr_nght_int && current_hour >= hr_afnn_int)
     {
         //afternoon
         set_tmp = temp_afnn;
     }
-
+    else if (current_hour == hr_nght_int)
+    {
+        if (current_min >= min_nght_int)
+        {
+            //night
+            set_tmp = temp_nght;
+        }
+        else
+        {
+            // still afternoon
+            set_tmp = temp_afnn;
+        }
+    }
 
     //compare the two temperatures
-    if (set_tmp >= (int)current_temp)
+    if (set_tmp >= current_temp)
     {
         heater_setting = "ON";
     }
