@@ -339,6 +339,7 @@ static void _do_work(void) {
     }
     fclose(fptr);
     current_temp_int = atoi(current_temp);
+    syslog(LOG_INFO, "Current temp: %i", current_temp);
 
     //compare the two temperatures
     if (set_tmp >= current_temp_int)
@@ -364,7 +365,7 @@ static void _do_work(void) {
     fprintf(fptr, "&min=%i", time_stuff->tm_min);
     fprintf(fptr, "&heater=%s", heater_setting);
     fprintf(fptr, "&setpt=%s",set_temp_str);
-    fprintf(fptr, "&actual=%i", current_temp_int);
+    fprintf(fptr, "&actual=%s", current_temp);
     fclose(fptr);
 
     fptr = fopen("/var/log/poster", "rb");
