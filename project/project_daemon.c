@@ -124,10 +124,27 @@ static void _do_work(void) {
   char* set_temp_str;
   char* heater_setting;
   char* current_time;
+  char* temp_hr;
+  char* temp_min;
   //const char s[4] = " ";
   //char* tok;
   char * buffer = 0;
   long length;
+
+
+  char* hr_morn;
+  char* hr_afnn;
+  char* hr_nght;
+  char* min_morn;
+  char* min_afnn;
+  char* min_nght;
+
+
+  int temp_morn;
+  int temp_afnn;
+  int temp_nght;
+
+
 
   char* to_send = 0;
 
@@ -148,15 +165,7 @@ static void _do_work(void) {
 	fread (buffer, 1, length, fptr);
     }
     fclose (fptr);
-    syslog(LOG_INFO, "%s", buffer);
-
-
-
-    //fscanf(fptr,"%s",&settings);
-    //fclose(fptr);
-    //rest = settings;
-    //syslog(LOG_INFO,"%s", settings);
-    
+    syslog(LOG_INFO, "%s", buffer);    
 
 
     syslog(LOG_INFO, "Stuff ain't workin");
@@ -164,9 +173,20 @@ static void _do_work(void) {
     syslog(LOG_INFO, "here's what I got for id: %s", set_id);
     set_time = strtok(NULL," ");
     syslog(LOG_INFO, "here's what I got for time: %s", set_time);
+    //temp_now = set_time;
+
     set_temp_str = strtok(NULL, " ");
     syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
     set_tmp = (int)set_temp_str;
+    //temp_morn = (int)set_temp_str;
+
+    ////////////////////////
+
+    hr_morn = strtok(set_time, ":");
+    syslog(LOG_INFO, "morn hr: %s", hr_morn);
+    min_morn = strtok(NULL, " ");
+    syslog(LOG_INFO, "morn min: %s", min_morn);
+
 
 
 
