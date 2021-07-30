@@ -112,8 +112,9 @@ static void _do_work(void) {
   struct tm *time_stuff;
   FILE *fptr;
 
-  int current_temp;
-  char * temp_now;
+  //int current_temp;
+  char * current_temp;
+  int current_temp_int;
   int set_tmp;
 
   char* set_id;
@@ -265,7 +266,6 @@ static void _do_work(void) {
     {
         //night
         set_tmp = temp_nght;
-        syslog(LOG_INFO, "nighttime");
 
     }
     else if (current_hour == hr_morn_int)
@@ -318,8 +318,16 @@ static void _do_work(void) {
         }
     }
 
+
+    //read from the temperature file
+    fptr = fopen("/var/tmp/temp", "r");
+    fscanf(fptr, "%s", &current_temp);
+    fclose(fptr);
+    current_temp_int = atoi(current_temp);
+    syslog(LOG_INFO, "current temp: %i\n", current_temp_int);
+
     //compare the two temperatures
-    if (set_tmp >= current_temp)
+    if (set_tmp >= current_temp_int)
     {
         heater_setting = "ON";
     }
@@ -335,29 +343,14 @@ static void _do_work(void) {
     fclose(fptr);
 
 
-    //read from the temperature file
-    fptr = fopen("/var/tmp/temp","r");
-    fscanf(fptr,"%s",&current_temp);
-    fclose(fptr);
-    current_temp_int
-    syslog(LOG_INFO, "current temp: %i\n",current_temp);
-
-
-
-    //heater_setting = "OFF";
-    //char someTime[10] = (int)time_stuff->tm_hour;
-    //itoa((int)time_stuff->tm_hour, someTime, 10);
-
-
-
     ///////////////////////////////////////////////////////
-    ///////////////////////////////////////////////////////
+    //send back the log
     fptr = fopen("/var/log/poster", "w");
     fprintf(fptr, "hour=%i", time_stuff->tm_hour);
     fprintf(fptr, "&min=%i", time_stuff->tm_min);
     fprintf(fptr, "&heater=%s", heater_setting);
     fprintf(fptr, "&setpt=%s",set_temp_str);
-    fprintf(fptr, "&actual=%i",current_temp);
+    fprintf(fptr, "&actual=%i", current_temp_int);
     fclose(fptr);
 
     fptr = fopen("/var/log/poster", "rb");
