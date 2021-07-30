@@ -116,6 +116,7 @@ static void _do_work(void) {
   FILE *fptr;
 
   int current_temp;
+  char * temp_now;
   int set_tmp;
 
   char* set_id;
@@ -130,6 +131,7 @@ static void _do_work(void) {
 
   char* to_send = 0;
 
+  sleep(3);
   while(1==1)
   {
 
@@ -164,7 +166,7 @@ static void _do_work(void) {
     syslog(LOG_INFO, "here's what I got for time: %s", set_time);
     set_temp_str = strtok(NULL, " ");
     syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
-    //set_tmp = (int)set_temp_str;
+    set_tmp = (int)set_temp_str;
 
 
 
@@ -174,12 +176,23 @@ static void _do_work(void) {
     fclose(fptr);
     syslog(LOG_INFO, "current temp: %i\n",current_temp);
 
-    
+
+    //compare the two temperatures
+    if (set_tmp >= (int)current_temp)
+    {
+	heater_setting = "ON";
+    }
+    else
+    {
+	heater_setting = "OFF";
+    }
+    //syslog(LOG_INFO, "%s", heater_setting);
+
     //try to write to the heater
     time(&time_current);
     time_stuff = localtime(&time_current);
     fptr = fopen("/var/tmp/status","w");
-    fprintf(fptr,"OFF : %i:%i:%i",time_stuff->tm_hour,time_stuff->tm_min,time_stuff->tm_sec);
+    fprintf(fptr,"%s : %i:%i:%i",heater_setting,time_stuff->tm_hour,time_stuff->tm_min,time_stuff->tm_sec);
     fclose(fptr);
 
     //heater_setting = "OFF";
@@ -189,7 +202,8 @@ static void _do_work(void) {
     fptr = fopen("/var/log/poster", "w");
     fprintf(fptr, "hour=%i", time_stuff->tm_hour);
     fprintf(fptr, "&min=%i", time_stuff->tm_min);
-    fprintf(fptr, "&heater=OFF&setpt=%s",set_temp_str);
+    fprintf(fptr, "&heater=%s", heater_setting);
+    fprintf(fptr, "&setpt=%s",set_temp_str);
     fprintf(fptr, "&actual=%i",current_temp);
     fclose(fptr);
 
