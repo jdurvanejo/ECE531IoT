@@ -320,11 +320,25 @@ static void _do_work(void) {
 
 
     //read from the temperature file
+    /*
     fptr = fopen("/var/tmp/temp", "r");
     fscanf(fptr, "%s", &current_temp);
     fclose(fptr);
     current_temp_int = atoi(current_temp);
     syslog(LOG_INFO, "current temp: %i\n", current_temp_int);
+    */
+
+    fptr = fopen("/var/tmp/temp", "rb");
+    fseek(fptr, 0, SEEK_END);
+    length = ftell(fptr);
+    fseek(fptr, 0, SEEK_SET);
+    current_temp = malloc(length);
+    if (current_temp)
+    {
+        fread(current_temp, 1, length, fptr);
+    }
+    fclose(fptr);
+    current_temp_int = atoi(current_temp);
 
     //compare the two temperatures
     if (set_tmp >= current_temp_int)
