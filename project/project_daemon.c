@@ -153,6 +153,8 @@ static void _do_work(void) {
   {
 
     //need to read from the database the different set points
+    //////////////////////////////////////////
+    //morning get
     get_http(MORNING_URL);
     //do some stuff to get the time and set point
     fptr = fopen("/var/log/heater", "rb");
@@ -178,14 +180,87 @@ static void _do_work(void) {
     set_temp_str = strtok(NULL, " ");
     syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
     set_tmp = (int)set_temp_str;
-    //temp_morn = (int)set_temp_str;
-
-    ////////////////////////
+    temp_morn = (int)set_temp_str;
 
     hr_morn = strtok(set_time, ":");
     syslog(LOG_INFO, "morn hr: %s", hr_morn);
     min_morn = strtok(NULL, " ");
     syslog(LOG_INFO, "morn min: %s", min_morn);
+    ///////////////////////////////////////////////////////
+
+
+    //////////////////////////////////////////////////
+    //afternoon get
+    get_http(AFTERNOON_URL);
+    //do some stuff to get the time and set point
+    fptr = fopen("/var/log/heater", "rb");
+    fseek(fptr, 0, SEEK_END);
+    length = ftell(fptr);
+    fseek(fptr, 0, SEEK_SET);
+    buffer = malloc(length);
+    if (buffer)
+    {
+        fread(buffer, 1, length, fptr);
+    }
+    fclose(fptr);
+    syslog(LOG_INFO, "%s", buffer);
+
+
+    syslog(LOG_INFO, "Stuff ain't workin");
+    set_id = strtok(buffer, " ");
+    syslog(LOG_INFO, "here's what I got for id: %s", set_id);
+    set_time = strtok(NULL, " ");
+    syslog(LOG_INFO, "here's what I got for time: %s", set_time);
+    //temp_now = set_time;
+
+    set_temp_str = strtok(NULL, " ");
+    syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
+    set_tmp = (int)set_temp_str;
+    temp_afnn = (int)set_temp_str;
+
+    hr_afnn = strtok(set_time, ":");
+    syslog(LOG_INFO, "afnn hr: %s", hr_afnn);
+    min_afnn = strtok(NULL, " ");
+    syslog(LOG_INFO, "morn min: %s", min_afnn);
+    ///////////////////////////////////////////////////////
+
+
+     //////////////////////////////////////////////////
+    //night get
+    get_http(NIGHT_URL);
+    //do some stuff to get the time and set point
+    fptr = fopen("/var/log/heater", "rb");
+    fseek(fptr, 0, SEEK_END);
+    length = ftell(fptr);
+    fseek(fptr, 0, SEEK_SET);
+    buffer = malloc(length);
+    if (buffer)
+    {
+        fread(buffer, 1, length, fptr);
+    }
+    fclose(fptr);
+    syslog(LOG_INFO, "%s", buffer);
+
+
+    syslog(LOG_INFO, "Stuff ain't workin");
+    set_id = strtok(buffer, " ");
+    syslog(LOG_INFO, "here's what I got for id: %s", set_id);
+    set_time = strtok(NULL, " ");
+    syslog(LOG_INFO, "here's what I got for time: %s", set_time);
+    //temp_now = set_time;
+
+    set_temp_str = strtok(NULL, " ");
+    syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
+    set_tmp = (int)set_temp_str;
+    temp_nght = (int)set_temp_str;
+
+    hr_nght = strtok(set_time, ":");
+    syslog(LOG_INFO, "afnn hr: %s", hr_nght);
+    min_nght = strtok(NULL, " ");
+    syslog(LOG_INFO, "morn min: %s", min_nght);
+    ///////////////////////////////////////////////////////
+
+
 
 
 
