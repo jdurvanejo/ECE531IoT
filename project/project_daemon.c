@@ -139,6 +139,13 @@ static void _do_work(void) {
   char* min_afnn;
   char* min_nght;
 
+  int hr_morn_int;
+  int hr_afnn_int;
+  int hr_nght_int;
+
+  int min_morn_int;
+  int min_afnn_int;
+  int min_nght_int;
 
   int temp_morn;
   int temp_afnn;
@@ -170,22 +177,25 @@ static void _do_work(void) {
     syslog(LOG_INFO, "%s", buffer);    
 
 
-    syslog(LOG_INFO, "Stuff ain't workin");
+   // syslog(LOG_INFO, "Stuff ain't workin");
     set_id = strtok(buffer, " ");
-    syslog(LOG_INFO, "here's what I got for id: %s", set_id);
+    //syslog(LOG_INFO, "here's what I got for id: %s", set_id);
     set_time = strtok(NULL," ");
-    syslog(LOG_INFO, "here's what I got for time: %s", set_time);
+    //syslog(LOG_INFO, "here's what I got for time: %s", set_time);
     //temp_now = set_time;
 
     set_temp_str = strtok(NULL, " ");
-    syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
+    syslog(LOG_INFO, "here's what I got for the first: id:%s time:%s temp:%s",set_id,set_time,set_temp_str);
     set_tmp = (int)set_temp_str;
     temp_morn = (int)set_temp_str;
 
     hr_morn = strtok(set_time, ":");
-    syslog(LOG_INFO, "morn hr: %s", hr_morn);
+    hr_morn_int = atoi(hr_morn);
+    syslog(LOG_INFO, "morn hr: %i", int_hr_morn);
     min_morn = strtok(NULL, " ");
-    syslog(LOG_INFO, "morn min: %s", min_morn);
+    min_morn_int = atoi(min_morn);
+
+    syslog(LOG_INFO, "morn min: %i", int_min_morn);
     ///////////////////////////////////////////////////////
 
 
@@ -206,15 +216,16 @@ static void _do_work(void) {
     syslog(LOG_INFO, "%s", buffer);
 
 
-    syslog(LOG_INFO, "Stuff ain't workin");
+    //syslog(LOG_INFO, "Stuff ain't workin");
     set_id = strtok(buffer, " ");
-    syslog(LOG_INFO, "here's what I got for id: %s", set_id);
+    //syslog(LOG_INFO, "here's what I got for id: %s", set_id);
     set_time = strtok(NULL, " ");
-    syslog(LOG_INFO, "here's what I got for time: %s", set_time);
+    //syslog(LOG_INFO, "here's what I got for time: %s", set_time);
     //temp_now = set_time;
 
     set_temp_str = strtok(NULL, " ");
-    syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
+    //syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
+    syslog(LOG_INFO, "here's what I got for the second: id:%s time:%s temp:%s", set_id, set_time, set_temp_str);
     set_tmp = (int)set_temp_str;
     temp_afnn = (int)set_temp_str;
 
@@ -242,15 +253,16 @@ static void _do_work(void) {
     syslog(LOG_INFO, "%s", buffer);
 
 
-    syslog(LOG_INFO, "Stuff ain't workin");
+    //syslog(LOG_INFO, "Stuff ain't workin");
     set_id = strtok(buffer, " ");
-    syslog(LOG_INFO, "here's what I got for id: %s", set_id);
+    //syslog(LOG_INFO, "here's what I got for id: %s", set_id);
     set_time = strtok(NULL, " ");
-    syslog(LOG_INFO, "here's what I got for time: %s", set_time);
+    //syslog(LOG_INFO, "here's what I got for time: %s", set_time);
     //temp_now = set_time;
 
     set_temp_str = strtok(NULL, " ");
-    syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
+    //syslog(LOG_INFO, "here's what I got for temp: %s", set_temp_str);
+    syslog(LOG_INFO, "here's what I got for the third: id:%s time:%s temp:%s", set_id, set_time, set_temp_str);
     set_tmp = (int)set_temp_str;
     temp_nght = (int)set_temp_str;
 
