@@ -233,6 +233,7 @@ static void _do_work(void) {
     syslog(LOG_INFO, "afnn hr: %s", hr_afnn);
     min_afnn = strtok(NULL, " ");
     syslog(LOG_INFO, "morn min: %s", min_afnn);
+    ///////////////////////
     ///////////////////////////////////////////////////////
 
 
