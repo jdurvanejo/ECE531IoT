@@ -90,7 +90,7 @@ static size_t callback(char *buff, size_t item_size, size_t item_number, void* a
 int main(int argc, char** argv)
 {
     //create array of verb strings to reference
-    char in_strings[20][100] = { "-h","--help","-u","--update", "m", "a" "n" };
+    char in_strings[20][100] = { "-h","--help","-u","--update"};
 
     int set_temp;
     int set_hour;
@@ -101,6 +101,8 @@ int main(int argc, char** argv)
     long length;
 
     char* current_url;
+
+    char* in_temp;
     //filter the input
 
     if (argc != 2 && argc != 5 && argc != 6)
@@ -133,33 +135,35 @@ int main(int argc, char** argv)
 	        if (strcmp(argv[2], "temp") == 0)
             {
 		        //check time of day
-                if (strcmp(argv[3], in_strings[4]) == 0)
+                if (strcmp(argv[3], "m") == 0)
                 {
                     //morning
                     current_url = UPDATE_TEMP_M_URL;
-		            char* in_temp = argv[4];
+		    in_temp = argv[4];
+		    printf("right before int");
                     set_temp = atoi(in_temp);
+		    printf("right after int");
                     if (set_temp > 100 || set_temp < 30)
                     {
                         printf("Woah that's a pretty wild temperature, I'm going to ignore that.");
                     }
                 }
-                else if (strcmp(argv[3], in_strings[5]) == 0)
+                else if (strcmp(argv[3], "a") == 0)
                 {
                     //afternoon
                     current_url = UPDATE_TEMP_A_URL;
-                    char* in_temp = argv[4];
+                    in_temp = argv[4];
                     set_temp = atoi(in_temp);
                     if (set_temp > 100 || set_temp < 30)
                     {
                         printf("Woah that's a pretty wild temperature, I'm going to ignore that.");
                     }
                 }
-                else if (strcmp(argv[3], in_strings[6]) == 0)
+                else if (strcmp(argv[3], "n") == 0)
                 {
                     //night
                     current_url = UPDATE_TEMP_N_URL;
-                    char* in_temp = argv[4];
+                    in_temp = argv[4];
                     set_temp = atoi(in_temp);
                     if (set_temp > 100 || set_temp < 30)
                     {
@@ -215,12 +219,12 @@ int main(int argc, char** argv)
             {
 		printf("got to the hour check");
                 //check time of day
-                if (strcmp(argv[3], in_strings[4]) == 0)
+                if (strcmp(argv[3], "m") == 0)
                 {
                     //morning
                     //check hour
                     current_url = UPDATE_TIME_M_URL;
-                    char* in_temp = argv[4];
+                    in_temp = argv[4];
                     set_hour = atoi(in_temp);
                     if (set_hour < 0 || set_hour > 24)
                     {
@@ -228,7 +232,7 @@ int main(int argc, char** argv)
                         return OK;
                     }
                     //check min
-                    char* in_temp = argv[5];
+                    in_temp = argv[5];
                     set_min = atoi(in_temp);
                     if (set_min < 0 || set_min > 59)
                     {
@@ -236,12 +240,12 @@ int main(int argc, char** argv)
                         return OK;
                     }
                 }
-                else if (strcmp(argv[3], in_strings[5]) == 0)
+                else if (strcmp(argv[3], "a") == 0)
                 {
                     //afternoon
                     //check hour
                     current_url = UPDATE_TIME_A_URL;
-                    char* in_temp = argv[4];
+                    in_temp = argv[4];
                     set_hour = atoi(in_temp);
                     if (set_hour < 0 || set_hour > 24)
                     {
@@ -249,7 +253,7 @@ int main(int argc, char** argv)
                         return OK;
                     }
                     //check min
-                    char* in_temp = argv[5];
+                    in_temp = argv[5];
                     set_min = atoi(in_temp);
                     if (set_min < 0 || set_min > 59)
                     {
@@ -257,12 +261,12 @@ int main(int argc, char** argv)
                         return OK;
                     }
                 }
-                else if (strcmp(argv[3], in_strings[6]) == 0)
+                else if (strcmp(argv[3], "n") == 0)
                 {
                     //night
                     //check hour
                     current_url = UPDATE_TIME_N_URL;
-                    char* in_temp = argv[4];
+                    in_temp = argv[4];
                     set_hour = atoi(in_temp);
                     if (set_hour < 0 || set_hour > 24)
                     {
@@ -270,7 +274,7 @@ int main(int argc, char** argv)
                         return OK;
                     }
                     //check min
-                    char* in_temp = argv[5];
+                    in_temp = argv[5];
                     set_min = atoi(in_temp);
                     if (set_min < 0 || set_min > 59)
                     {
