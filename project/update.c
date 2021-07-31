@@ -217,7 +217,7 @@ int main(int argc, char** argv)
         {
             if (strcmp(argv[2], "time") == 0)
             {
-		printf("got to the hour check");
+		printf("got to the hour\n");
                 //check time of day
                 if (strcmp(argv[3], "m") == 0)
                 {
@@ -306,7 +306,8 @@ int main(int argc, char** argv)
                 }
                 fclose(fptr);
 
-                printf("%s",to_send);
+                printf("%s\n",to_send);
+                printf(current_url);
                 //send the command over
 
 
