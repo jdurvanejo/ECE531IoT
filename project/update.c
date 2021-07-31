@@ -127,17 +127,21 @@ int main(int argc, char** argv)
 
     if (argc == 5)
     {
-        //temperature update
+	//temperature update
         if (strcmp(argv[1], in_strings[2]) == 0 || strcmp(argv[1], in_strings[3]) == 0)
         {
-            if (strcmp(argv[2], "temp") == 0)
+            printf("updating\n");
+	    if (strcmp(argv[2], "temp") == 0)
             {
-                //check time of day
+                printf("got past temp\n");
+		//check time of day
                 if (strcmp(argv[3], in_strings[4]) == 0)
                 {
                     //morning
                     current_url = UPDATE_TEMP_M_URL;
-                    set_temp = atoi(argv[4]);
+		    printf("so close\n");
+		    char* in_temp = argv[4];
+                    set_temp = atoi(in_temp);
                     if (set_temp > 100 || set_temp < 30)
                     {
                         printf("Woah that's a pretty wild temperature, I'm going to ignore that.");
@@ -185,7 +189,7 @@ int main(int argc, char** argv)
                 }
                 fclose(fptr);
 
-                printf("%s", to_send);
+                printf("%s\n", to_send);
 		printf("%s", current_url);
                 //send the command over
                 //post_http(LOG_URL, to_send);
@@ -203,13 +207,14 @@ int main(int argc, char** argv)
         }
     }
 
-    if (argc == 7)
+    if (argc == 6)
     {
         //time update
         if (strcmp(argv[1], in_strings[2]) == 0 || strcmp(argv[1], in_strings[3]) == 0)
         {
             if (strcmp(argv[2], "time") == 0)
             {
+		printf("got to the hour check");
                 //check time of day
                 if (strcmp(argv[3], in_strings[4]) == 0)
                 {
@@ -223,7 +228,7 @@ int main(int argc, char** argv)
                         return OK;
                     }
                     //check min
-                    set_min = atoi(argv[4]);
+                    set_min = atoi(argv[5]);
                     if (set_min < 0 || set_min > 59)
                     {
                         printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
@@ -242,7 +247,7 @@ int main(int argc, char** argv)
                         return OK;
                     }
                     //check min
-                    set_min = atoi(argv[4]);
+                    set_min = atoi(argv[5]);
                     if (set_min < 0 || set_min > 59)
                     {
                         printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
