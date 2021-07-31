@@ -30,8 +30,8 @@ void display_help()
     printf("-h, --help, -u, -update\n");
     printf("\n");
     printf("The first two will display this message\n");
-    printf("The second two are used to update the thermostat settings\n";
-    prinf("\n");
+    printf("The second two are used to update the thermostat settings\n");
+    printf("\n");
     printf("There are 3 set points: Morning, Afternoon and Night\n");
     printf("Currently there are only two settings that may be adjusted\n");
     printf("for each of the three set points: time and temperature\n");
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
 
     //filter the input
 
-    if (argc != 2 && argc != 5 % %argc != 6)
+    if (argc != 2 && argc != 5 && argc != 6)
     {
         printf("I can't understand that command. There is an incorrect number of arguments see help (-h) for details.")
             return OK;
@@ -257,9 +257,10 @@ int main(int argc, char** argv)
 
                 //generate the string to send
                 to_send = "time=";
-                strcat(to_send, itoa(set_hour,10));
-                strcat(to_send, ":");
-                strcat(to_send, itoa(set_min, 10));
+                char* tmp_array = itoa(set_hour, 10);
+                strcat(to_send, tmp_array);
+                strcat(to_send, ":"); 
+                tmp_array = itoa(set_min, 10);
 
                 printf(to_send);
                 //send the command over
