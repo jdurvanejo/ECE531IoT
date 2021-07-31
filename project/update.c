@@ -195,7 +195,10 @@ int main(int argc, char** argv)
                 printf("%s\n", to_send);
 		        printf("%s", current_url);
                 //send the command over
+
+                printf("trying to post time");
                 post_http(current_url,to_send);
+                printf("didit");
             }
             else
             {
@@ -309,8 +312,9 @@ int main(int argc, char** argv)
                 printf("%s\n",to_send);
                 printf("%s",current_url);
                 //send the command over
-
-		post_http(current_url,to_send);
+                printf("trying to post time");
+		        post_http(current_url,to_send);
+                printf("didit");
 
 
             }
