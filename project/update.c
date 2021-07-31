@@ -1,0 +1,282 @@
+#include <stdio.h>
+#include <curl/curl.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+#define OK        0
+#define INIT_ERR  1
+#define REQ_ERR   2
+
+
+#define UPDATE_TIME_M_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/update/time/1"
+#define UPDATE_TIME_A_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/update/time/2"
+#define UPDATE_TIME_N_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/update/time/3"
+#define UPDATE_TEMP_M_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/update/setpt/1"
+#define UPDATE_TEMP_A_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/update/setpt/2"
+#define UPDATE_TEMP_N_URL "http://ec2-54-177-45-63.us-west-1.compute.amazonaws.com:3000/update/setpt/3"
+
+
+//this code is just going to be for updating the time or temperature
+//if there is extra time more will be added
+
+
+void display_help()
+{
+    //help
+    printf("Hi there, here are a list of the commands that can be used:\n");
+    printf("-h, --help, -u, -update\n");
+    printf("\n");
+    printf("The first two will display this message\n";
+    printf("The second two are used to update the thermostat settings\n";
+    prinf("\n");
+    printf("There are 3 set points: Morning, Afternoon and Night\n");
+    printf("Currently there are only two settings that may be adjusted\n");
+    printf("for each of the three set points: time and temperature\n");
+    printf("To specify the part of the day you only need to use 'm' 'a' or 'n'\n);
+    printf("to refer to either morning, afternoon or night.\n");
+    printf("The time must be military time and the temperature must be a whole number no decimals.\n");
+    printf("\n");
+    printf("Examples: \n");
+    printf("To adjust the time please follow the following format:\n");
+    printf("./update -u temp <time of day> <temperature>\n");
+    printf("./update -u temp m 70  <- this would reset the morning temperature to 70 degrees\n");
+    printf("To adjust the temperature use the following:\n);
+    printf("./update -u time <time of day> <hour> <minute>\n");
+    printf("./update -u time a 14 30\n");
+    printf("This would reset the afternoon time setting to 14:30.\n");
+    printf("\n");
+    printf("if more assistance is required please contact jdurvanejo@unm.edu");
+}
+
+void post_http(char* url, char* myString)
+{
+
+    CURL* curl;
+    CURLcode res;
+    char message[100];
+    strcat(message, myString);
+
+    curl = curl_easy_init();
+    if (curl) {
+
+        curl_easy_setopt(curl, CURLOPT_URL, url);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, message);
+        res = curl_easy_perform(curl);
+
+        if (res != CURLE_OK)
+            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+
+        curl_easy_cleanup(curl);
+    }
+    curl_global_cleanup();
+}
+
+static size_t callback(char *buff, size_t item_size, size_t item_number, void* additional)
+{
+    size_t num_bytes = item_size*item_number;
+    printf("new Chunk (%zu bytes)\n", num_bytes);
+    for (int i = 0; i < num_bytes; i++) {
+	printf("%c",buff[i]);
+    }
+    printf("\n\n");
+    return num_bytes;
+}
+
+
+
+int main(int argc, char** argv)
+{
+    //create array of verb strings to reference
+    char in_strings[20][100] = { "-h","--help","-u","--update", "m", "a" "n" };
+
+    int set_temp;
+    int set_hour;
+    int set_min;
+    FILE* fptr;
+
+    char* to_send;
+
+
+    //filter the input
+
+    if (argc != 2 && argc != 5 % %argc != 6)
+    {
+        printf("I can't understand that command. There is an incorrect number of arguments see help (-h) for details.")
+            return OK;
+    }
+
+
+    if (argc == 2)
+    {
+        //help
+        if (strcmp(argv[1], in_strings[0]) == 0 || strcmp(argv[1], in_strings[1]) == 0)
+        {
+            display_help();
+            return OK;
+        }
+        else
+        {
+            printf("I don't know that command see help (-h) for details.");
+            return OK;
+        }
+    }
+
+    if (argc == 5)
+    {
+        //temperature update
+        if (strcmp(argv[1], in_strings[2]) == 0 || strcmp(argv[1], in_strings[3]) == 0)
+        {
+            if (strcmp(argv[2], "temp") == 0)
+            {
+                //check time of day
+                if (strcmp(argv[3], in_string[4]) == 0)
+                {
+                    //morning
+                    set_temp = atoi(argv[4]);
+                    if (set_temp > 100 || set_temp < 30)
+                    {
+                        printf("Woah that's a pretty wild temperature, I'm going to ignore that.");
+                    }
+                }
+                else if (strcmp(argv[3], in_string[5]) == 0)
+                {
+                    //afternoon
+                    set_temp = atoi(argv[4]);
+                    if (set_temp > 100 || set_temp < 30)
+                    {
+                        printf("Woah that's a pretty wild temperature, I'm going to ignore that.");
+                    }
+                }
+                else if (strcmp(argv[3], in_string[6]) == 0)
+                {
+                    //night
+                    set_temp = atoi(argv[4]);
+                    if (set_temp > 100 || set_temp < 30)
+                    {
+                        printf("Woah that's a pretty wild temperature, I'm going to ignore that.");
+                    }
+                }
+                else
+                {
+                    printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+                    return OK;
+                }
+
+                //generate the string to send over
+                to_send = "temp=";
+                strcat(to_send, itoa(set_temp, 10));
+
+                printf(to_send);
+
+                //send the command over
+
+            }
+            else
+            {
+                printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+                return OK;
+            }
+        }
+        else
+        {
+            printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+            return OK;
+        }
+    }
+
+    if (argc == 7)
+    {
+        //time update
+        if (strcmp(argv[1], in_strings[2]) == 0 || strcmp(argv[1], in_strings[3]) == 0)
+        {
+            if (strcmp(argv[2], "time") == 0)
+            {
+                //check time of day
+                if (strcmp(argv[3], in_string[4]) == 0)
+                {
+                    //morning
+                    //check hour
+                    set_hour = atoi(argv[4]);
+                    if (set_hour < 0 || set_hour > 24)
+                    {
+                        printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+                        return OK;
+                    }
+                    //check min
+                    set_min = atoi(argv[4]);
+                    if (set_min < 0 || set_min > 59)
+                    {
+                        printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+                        return OK;
+                    }
+                }
+                else if (strcmp(argv[3], in_string[5]) == 0)
+                {
+                    //afternoon
+                    //check hour
+                    set_hour = atoi(argv[4]);
+                    if (set_hour < 0 || set_hour > 24)
+                    {
+                        printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+                        return OK;
+                    }
+                    //check min
+                    set_min = atoi(argv[4]);
+                    if (set_min < 0 || set_min > 59)
+                    {
+                        printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+                        return OK;
+                    }
+                }
+                else if (strcmp(argv[3], in_string[6]) == 0)
+                {
+                    //night
+                    //check hour
+                    set_hour = atoi(argv[4]);
+                    if (set_hour < 0 || set_hour > 24)
+                    {
+                        printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+                        return OK;
+                    }
+                    //check min
+                    set_min = atoi(argv[4]);
+                    if (set_min < 0 || set_min > 59)
+                    {
+                        printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+                        return OK;
+                    }
+                }
+                else
+                {
+                    printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+                    return OK;
+                }
+
+                //generate the string to send
+                to_send = "time=";
+                strcat(to_send, itoa(set_hour,10));
+                strcat(to_send, ":");
+                strcat(to_send, itoa(set_min, 10));
+
+                printf(to_send);
+                //send the command over
+
+
+
+
+            }
+            else
+            {
+                printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+                return OK;
+            }
+        }
+        else
+        {
+            printf("There is an issue with the command you enetered, see help for assistance (-h)\n");
+            return OK;
+        }
+    }
+
+}
