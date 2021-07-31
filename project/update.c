@@ -74,18 +74,6 @@ void post_http(char* url, char* myString)
     curl_global_cleanup();
 }
 
-static size_t callback(char *buff, size_t item_size, size_t item_number, void* additional)
-{
-    size_t num_bytes = item_size*item_number;
-    printf("new Chunk (%zu bytes)\n", num_bytes);
-    for (int i = 0; i < num_bytes; i++) {
-	printf("%c",buff[i]);
-    }
-    printf("\n\n");
-    return num_bytes;
-}
-
-
 
 int main(int argc, char** argv)
 {
@@ -140,9 +128,7 @@ int main(int argc, char** argv)
                     //morning
                     current_url = UPDATE_TEMP_M_URL;
 		    in_temp = argv[4];
-		    printf("right before int");
                     set_temp = atoi(in_temp);
-		    printf("right after int");
                     if (set_temp > 100 || set_temp < 30)
                     {
                         printf("Woah that's a pretty wild temperature, I'm going to ignore that.");
@@ -177,11 +163,11 @@ int main(int argc, char** argv)
                 }
 
                 //generate the string to send over
-                fptr = fopen("/home/jason/Documents/temporary", "w");
+                fptr = fopen("updater", "w");
                 fprintf(fptr, "setpt=%i", set_temp);
                 fclose(fptr);
 
-                fptr = fopen("/home/jason/Documents/temporary", "rb");
+                fptr = fopen("updater", "rb");
                 fseek(fptr, 0, SEEK_END);
                 length = ftell(fptr);
                 fseek(fptr, 0, SEEK_SET);
@@ -192,13 +178,8 @@ int main(int argc, char** argv)
                 }
                 fclose(fptr);
 
-                printf("%s\n", to_send);
-		        printf("%s", current_url);
                 //send the command over
-
-                printf("trying to post time");
                 post_http(current_url,to_send);
-                printf("didit");
             }
             else
             {
@@ -220,7 +201,6 @@ int main(int argc, char** argv)
         {
             if (strcmp(argv[2], "time") == 0)
             {
-		printf("got to the hour\n");
                 //check time of day
                 if (strcmp(argv[3], "m") == 0)
                 {
@@ -293,12 +273,12 @@ int main(int argc, char** argv)
 
                 //generate the string to send over
                 //fptr = fopen("/var/log/poster", "w");
-                fptr = fopen("/home/jason/Documents/temporary","w");
-                fprintf(fptr, "time=%i", set_hour);
-                fprintf(fptr, ":%i", set_min);
+                fptr = fopen("updater","w");
+                fprintf(fptr, "time=%s", argv[4]);
+                fprintf(fptr, ":%s", argv[5]);
                 fclose(fptr);
 
-                fptr = fopen("/home/jason/Documents/temporary", "rb");
+                fptr = fopen("updater", "rb");
                 fseek(fptr, 0, SEEK_END);
                 length = ftell(fptr);
                 fseek(fptr, 0, SEEK_SET);
@@ -309,12 +289,8 @@ int main(int argc, char** argv)
                 }
                 fclose(fptr);
 
-                printf("%s\n",to_send);
-                printf("%s",current_url);
                 //send the command over
-                printf("trying to post time");
-		        post_http(current_url,to_send);
-                printf("didit");
+		post_http(current_url,to_send);
 
 
             }
