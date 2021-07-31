@@ -100,7 +100,7 @@ int main(int argc, char** argv)
     char* to_send = 0;
     long length;
 
-
+    char* current_url;
     //filter the input
 
     if (argc != 2 && argc != 5 && argc != 6)
@@ -136,6 +136,7 @@ int main(int argc, char** argv)
                 if (strcmp(argv[3], in_strings[4]) == 0)
                 {
                     //morning
+		   
                     set_temp = atoi(argv[4]);
                     if (set_temp > 100 || set_temp < 30)
                     {
@@ -183,7 +184,7 @@ int main(int argc, char** argv)
                 fclose(fptr);
 
                 printf("%s", to_send);
-
+		printf("%s", current_url);
                 //send the command over
                 //post_http(LOG_URL, to_send);
             }
@@ -270,7 +271,7 @@ int main(int argc, char** argv)
 
                 //generate the string to send over
                 //fptr = fopen("/var/log/poster", "w");
-                fptr = fopen("/home/jason/Documents/temporary","w")
+                fptr = fopen("/home/jason/Documents/temporary","w");
                 fprintf(fptr, "time=%i", set_hour);
                 fprintf(fptr, ":%i", set_min);
                 fclose(fptr);
@@ -286,7 +287,7 @@ int main(int argc, char** argv)
                 }
                 fclose(fptr);
 
-                printf(to_send);
+                printf("%s",to_send);
                 //send the command over
 
 
