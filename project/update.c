@@ -195,7 +195,7 @@ int main(int argc, char** argv)
                 printf("%s\n", to_send);
 		        printf("%s", current_url);
                 //send the command over
-                //post_http(LOG_URL, to_send);
+                post_http(current_url,to_send);
             }
             else
             {
@@ -307,10 +307,10 @@ int main(int argc, char** argv)
                 fclose(fptr);
 
                 printf("%s\n",to_send);
-                printf(current_url);
+                printf("%s",current_url);
                 //send the command over
 
-
+		post_http(current_url,to_send);
 
 
             }
