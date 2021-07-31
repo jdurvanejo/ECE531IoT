@@ -97,14 +97,15 @@ int main(int argc, char** argv)
     int set_min;
     FILE* fptr;
 
-    char* to_send;
+    char* to_send = 0;
+    long length;
 
 
     //filter the input
 
     if (argc != 2 && argc != 5 && argc != 6)
     {
-        printf("I can't understand that command. There is an incorrect number of arguments see help (-h) for details.")
+        printf("I can't understand that command. There is an incorrect number of arguments see help (-h) for details.");
             return OK;
     }
 
@@ -132,7 +133,7 @@ int main(int argc, char** argv)
             if (strcmp(argv[2], "temp") == 0)
             {
                 //check time of day
-                if (strcmp(argv[3], in_string[4]) == 0)
+                if (strcmp(argv[3], in_strings[4]) == 0)
                 {
                     //morning
                     set_temp = atoi(argv[4]);
@@ -166,13 +167,25 @@ int main(int argc, char** argv)
                 }
 
                 //generate the string to send over
-                to_send = "temp=";
-                strcat(to_send, itoa(set_temp, 10));
+                fptr = fopen("/home/jason/Documents/temporary", "w");
+                fprintf(fptr, "setpt=%i", set_temp);
+                fclose(fptr);
 
-                printf(to_send);
+                fptr = fopen("/home/jason/Documents/temporary", "rb");
+                fseek(fptr, 0, SEEK_END);
+                length = ftell(fptr);
+                fseek(fptr, 0, SEEK_SET);
+                to_send = malloc(length);
+                if (to_send)
+                {
+                    fread(to_send, 1, length, fptr);
+                }
+                fclose(fptr);
+
+                printf("%s", to_send);
 
                 //send the command over
-
+                //post_http(LOG_URL, to_send);
             }
             else
             {
@@ -255,12 +268,23 @@ int main(int argc, char** argv)
                     return OK;
                 }
 
-                //generate the string to send
-                to_send = "time=";
-                char* tmp_array = itoa(set_hour, 10);
-                strcat(to_send, tmp_array);
-                strcat(to_send, ":"); 
-                tmp_array = itoa(set_min, 10);
+                //generate the string to send over
+                //fptr = fopen("/var/log/poster", "w");
+                fptr = fopen("/home/jason/Documents/temporary","w")
+                fprintf(fptr, "time=%i", set_hour);
+                fprintf(fptr, ":%i", set_min);
+                fclose(fptr);
+
+                fptr = fopen("/home/jason/Documents/temporary", "rb");
+                fseek(fptr, 0, SEEK_END);
+                length = ftell(fptr);
+                fseek(fptr, 0, SEEK_SET);
+                to_send = malloc(length);
+                if (to_send)
+                {
+                    fread(to_send, 1, length, fptr);
+                }
+                fclose(fptr);
 
                 printf(to_send);
                 //send the command over
