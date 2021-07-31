@@ -3,6 +3,8 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <stdlib.h>
+
 
 #define OK        0
 #define INIT_ERR  1
@@ -27,13 +29,13 @@ void display_help()
     printf("Hi there, here are a list of the commands that can be used:\n");
     printf("-h, --help, -u, -update\n");
     printf("\n");
-    printf("The first two will display this message\n";
+    printf("The first two will display this message\n");
     printf("The second two are used to update the thermostat settings\n";
     prinf("\n");
     printf("There are 3 set points: Morning, Afternoon and Night\n");
     printf("Currently there are only two settings that may be adjusted\n");
     printf("for each of the three set points: time and temperature\n");
-    printf("To specify the part of the day you only need to use 'm' 'a' or 'n'\n);
+    printf("To specify the part of the day you only need to use 'm' 'a' or 'n'\n");
     printf("to refer to either morning, afternoon or night.\n");
     printf("The time must be military time and the temperature must be a whole number no decimals.\n");
     printf("\n");
@@ -41,7 +43,7 @@ void display_help()
     printf("To adjust the time please follow the following format:\n");
     printf("./update -u temp <time of day> <temperature>\n");
     printf("./update -u temp m 70  <- this would reset the morning temperature to 70 degrees\n");
-    printf("To adjust the temperature use the following:\n);
+    printf("To adjust the temperature use the following:\n");
     printf("./update -u time <time of day> <hour> <minute>\n");
     printf("./update -u time a 14 30\n");
     printf("This would reset the afternoon time setting to 14:30.\n");
@@ -139,7 +141,7 @@ int main(int argc, char** argv)
                         printf("Woah that's a pretty wild temperature, I'm going to ignore that.");
                     }
                 }
-                else if (strcmp(argv[3], in_string[5]) == 0)
+                else if (strcmp(argv[3], in_strings[5]) == 0)
                 {
                     //afternoon
                     set_temp = atoi(argv[4]);
@@ -148,7 +150,7 @@ int main(int argc, char** argv)
                         printf("Woah that's a pretty wild temperature, I'm going to ignore that.");
                     }
                 }
-                else if (strcmp(argv[3], in_string[6]) == 0)
+                else if (strcmp(argv[3], in_strings[6]) == 0)
                 {
                     //night
                     set_temp = atoi(argv[4]);
@@ -193,7 +195,7 @@ int main(int argc, char** argv)
             if (strcmp(argv[2], "time") == 0)
             {
                 //check time of day
-                if (strcmp(argv[3], in_string[4]) == 0)
+                if (strcmp(argv[3], in_strings[4]) == 0)
                 {
                     //morning
                     //check hour
@@ -211,7 +213,7 @@ int main(int argc, char** argv)
                         return OK;
                     }
                 }
-                else if (strcmp(argv[3], in_string[5]) == 0)
+                else if (strcmp(argv[3], in_strings[5]) == 0)
                 {
                     //afternoon
                     //check hour
@@ -229,7 +231,7 @@ int main(int argc, char** argv)
                         return OK;
                     }
                 }
-                else if (strcmp(argv[3], in_string[6]) == 0)
+                else if (strcmp(argv[3], in_strings[6]) == 0)
                 {
                     //night
                     //check hour
