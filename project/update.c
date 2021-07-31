@@ -136,7 +136,7 @@ int main(int argc, char** argv)
                 if (strcmp(argv[3], in_strings[4]) == 0)
                 {
                     //morning
-		   
+                    current_url = UPDATE_TEMP_M_URL;
                     set_temp = atoi(argv[4]);
                     if (set_temp > 100 || set_temp < 30)
                     {
@@ -146,6 +146,7 @@ int main(int argc, char** argv)
                 else if (strcmp(argv[3], in_strings[5]) == 0)
                 {
                     //afternoon
+                    current_url = UPDATE_TEMP_A_URL;
                     set_temp = atoi(argv[4]);
                     if (set_temp > 100 || set_temp < 30)
                     {
@@ -155,6 +156,7 @@ int main(int argc, char** argv)
                 else if (strcmp(argv[3], in_strings[6]) == 0)
                 {
                     //night
+                    current_url = UPDATE_TEMP_N_URL;
                     set_temp = atoi(argv[4]);
                     if (set_temp > 100 || set_temp < 30)
                     {
@@ -213,6 +215,7 @@ int main(int argc, char** argv)
                 {
                     //morning
                     //check hour
+                    current_url = UPDATE_TIME_M_URL;
                     set_hour = atoi(argv[4]);
                     if (set_hour < 0 || set_hour > 24)
                     {
@@ -231,6 +234,7 @@ int main(int argc, char** argv)
                 {
                     //afternoon
                     //check hour
+                    current_url = UPDATE_TIME_A_URL;
                     set_hour = atoi(argv[4]);
                     if (set_hour < 0 || set_hour > 24)
                     {
@@ -249,6 +253,7 @@ int main(int argc, char** argv)
                 {
                     //night
                     //check hour
+                    current_url = UPDATE_TIME_N_URL;
                     set_hour = atoi(argv[4]);
                     if (set_hour < 0 || set_hour > 24)
                     {
